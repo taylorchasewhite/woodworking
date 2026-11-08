@@ -1,0 +1,76 @@
+{
+  "title": "US / UK tavern botanicals",
+  "seed": 73149,
+  "sections": [
+    {
+      "key": "wine",
+      "title": "Wine - grape vine",
+      "start": 0,
+      "end": 19.3,
+      "description": "Palmate grape leaves, irregular hanging bunches and curled tendrils.",
+      "viewBox": [
+        -0.65,
+        16.4667,
+        22.5989,
+        3.556
+      ],
+      "rotate": 0
+    },
+    {
+      "key": "beer",
+      "title": "Beer - hops and barley",
+      "start": 19.3,
+      "end": 34.5,
+      "description": "Hop bracts and lobed leaves weave into barley heads with long awns.",
+      "viewBox": [
+        18.6489,
+        5.1276,
+        8.2028,
+        14.7511
+      ],
+      "rotate": -90
+    },
+    {
+      "key": "gin",
+      "title": "Gin - common juniper",
+      "start": 34.5,
+      "end": 45,
+      "description": "Short needle whorls and berry-like seed cones; not generic cedar foliage.",
+      "viewBox": [
+        23.5518,
+        4.9588,
+        13.8,
+        3.5753
+      ],
+      "rotate": 0
+    },
+    {
+      "key": "whiskey",
+      "title": "American whiskey / bourbon - rye and corn",
+      "start": 45,
+      "end": 62.5,
+      "description": "Slender rye heads and corn ears with husks: rye whiskey and the signature grain of bourbon.",
+      "viewBox": [
+        34.0518,
+        4.9761,
+        20.8,
+        3.536
+      ],
+      "rotate": 0
+    },
+    {
+      "key": "oak",
+      "title": "White oak - leaf and acorn tribute",
+      "start": 62.5,
+      "end": 72.42322971502571,
+      "description": "Rounded white-oak lobes and capped acorns, honoring the wood and barrel-aged spirits.",
+      "viewBox": [
+        51.5518,
+        4.9682,
+        13.2232,
+        3.5524
+      ],
+      "rotate": 0
+    }
+  ]
+}
