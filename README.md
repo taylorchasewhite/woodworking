@@ -11,11 +11,30 @@ fabrication files.
 Download or clone the repository, then open the gallery locally. GitHub's file
 viewer does not run the interactive HTML.
 
-## Baseline warning
+## Origin compatibility
 
-The initial imported SVG exports are a design-history snapshot, **not cut-ready**:
-their Shaper engraving and guide colors were reversed. A subsequent version will
-correct this. Never import the photo-textured, annotated proof as a cutting file.
+See [import instructions and fabrication cautions](plans/bar-top-engraving/SHAPER-ORIGIN.md).
+Current exports encode **gray on-line engraving** and **blue non-cutting guides**.
+The `bar-top-art-baseline-v1` tag preserves the pre-correction design with reversed
+colors and **must not be used for cutting**. Never import the annotated wood proof.
+The [Origin encoding v2 release](https://github.com/taylorchasewhite/woodworking/releases/tag/bar-top-origin-encoding-v2)
+includes an SVG-only transfer ZIP with instructions; extract it before copying
+files onto a USB drive.
+
+## Rebuilding
+
+Install Node.js 18 or newer; there are no third-party dependencies.
+
+```powershell
+npm run build:bar-top
+npm test
+```
+
+The build regenerates the latest layered SVG design, ten exact-geometry Origin
+working batches and the comparison gallery. It does not regenerate the earlier
+design variants or PNG screenshots. The other botanical generators are included
+for historical designs. `npm run prepare:bar-top-details` creates ignored HTML
+pages for rendering detail screenshots; the gallery itself needs no build server.
 
 ## Versioning
 

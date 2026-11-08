@@ -1,0 +1,82 @@
+{
+  "encoding": {
+    "onLine": "#808080",
+    "guide": "#0000ff"
+  },
+  "widthInches": 64.125,
+  "heightInches": 20,
+  "totalPaths": 12174,
+  "placement": "All files use the same full-board guides and coordinates. Never scale individual batches.",
+  "batches": [
+    {
+      "section": "wine",
+      "pass": "linework",
+      "filename": "wine-linework.svg",
+      "pathCount": 624,
+      "bytes": 790663
+    },
+    {
+      "section": "wine",
+      "pass": "shading",
+      "filename": "wine-shading.svg",
+      "pathCount": 1441,
+      "bytes": 468485
+    },
+    {
+      "section": "beer",
+      "pass": "linework",
+      "filename": "beer-linework.svg",
+      "pathCount": 986,
+      "bytes": 886985
+    },
+    {
+      "section": "beer",
+      "pass": "shading",
+      "filename": "beer-shading.svg",
+      "pathCount": 1291,
+      "bytes": 688728
+    },
+    {
+      "section": "gin",
+      "pass": "linework",
+      "filename": "gin-linework.svg",
+      "pathCount": 739,
+      "bytes": 354045
+    },
+    {
+      "section": "gin",
+      "pass": "shading",
+      "filename": "gin-shading.svg",
+      "pathCount": 2517,
+      "bytes": 1290014
+    },
+    {
+      "section": "whiskey",
+      "pass": "linework",
+      "filename": "whiskey-linework.svg",
+      "pathCount": 1251,
+      "bytes": 1052632
+    },
+    {
+      "section": "whiskey",
+      "pass": "shading",
+      "filename": "whiskey-shading.svg",
+      "pathCount": 1611,
+      "bytes": 747278
+    },
+    {
+      "section": "oak",
+      "pass": "linework",
+      "filename": "oak-linework.svg",
+      "pathCount": 384,
+      "bytes": 422193
+    },
+    {
+      "section": "oak",
+      "pass": "shading",
+      "filename": "oak-shading.svg",
+      "pathCount": 1330,
+      "bytes": 694464
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "woodworking",
+  "private": true,
+  "scripts": {
+    "build:bar-top": "node \"plans\\bar-top-engraving\\src\\generate-garland.js\" --master && node \"plans\\bar-top-engraving\\src\\build-design-gallery.js\"",
+    "test": "node --test \"plans\\bar-top-engraving\\src\\origin-exports.test.js\"",
+    "prepare:bar-top-details": "node \"plans\\bar-top-engraving\\src\\prepare-master-details.js\""
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
