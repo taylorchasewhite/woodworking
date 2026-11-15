@@ -14,47 +14,62 @@ is **gray stroke = on-line engraving** and **blue stroke = non-cutting guide**.
 Both open and closed paths can be on-line cuts. SVG stroke width does not control
 the width of the routed groove.
 
-## Current arrangement: version 4, reduced-detail review
+## Current arrangement: version 5, larger-motif review
 
 Starting at the free end of the short arm, the sequence is now
 **Whiskey / rye and corn > Gin / juniper > Beer / hops and barley >
 Wine / grapes > White oak / acorns**.
 
-Following a physical test, the user reported a groove about 1.5 to 2 times wider
-than the illustrated lines and chose **25 percent fewer cuts overall**.
-Version 4 removes **3,118 of 12,472 paths**, leaving **9,354**. Those removals
-are about half of the 6,205 fine texture paths; all **6,267 structural paths**
-remain at their exact v3 coordinates. Outlines, juniper needles, main veins,
-corn-kernel side faces, plant count, layering, transitions and placement are
-unchanged. Whole texture strokes are thinned evenly in drawing order; all
-visible fragments of a clipped stroke are removed or retained together.
+Following the wider-groove test and v4's texture reduction, the user requested
+larger individual motifs and fewer items without enlarging the wood or the
+engraving footprint. V5 targets **40 percent larger motifs**. Actual median
+linear-size increases, measured from full curved silhouette areas before
+occlusion, range from about **34 to 47 percent**, with most close to 40 percent.
+Contours, veins, fruit and their attachments are enlarged geometrically; SVG
+stroke widths have not been increased.
 
-The whiskey plants still occupy the short arm; juniper follows the bend, then
-beer and wine lead into the oak ending. Oak texture is lighter, but its shapes
-and overlaps are unchanged. The existing beer grouping remains fitted about
-10 percent lengthwise without reducing foliage height.
+| Motif | V4 count | V5 count |
+| --- | ---: | ---: |
+| Grape leaves | 23 | 16 |
+| Individual grapes | 91 | 45 |
+| Hanging grape bunches | 7 | 5 |
+| Hop leaves | 17 | 13 |
+| Juniper needles | 837 | 483 |
+| Juniper berries | 40 | 24 |
+| Barley heads | 11 | 8 |
+| Rye heads | 17 | 11 |
+| Oak leaves | 23 | 17 |
+| Acorns | 5 | 4 |
 
-The reduced version has approximately **1,952 inches (163 feet)** of engraving
-lines, versus about 2,346 inches in v3. The 25 percent reduction refers to cut
-path count, not total line length or a guaranteed amount of cutting time.
+The two corn ears remain, but their kernels, husks and shanks are enlarged
+together and the ears lean more horizontally to fit the established band.
+Branches and petioles still connect the foliage; hidden lines are regenerated
+for the new overlaps. Selected oak leaves partly conceal fruit while one acorn
+remains clear of foreground foliage. Plant order and section spans are unchanged.
+
+V5 has **5,991 visible cut paths**, versus v4's 9,354, and approximately
+**1,648 inches (137 feet)** of engraving lines, versus about 1,952 inches in v4.
+Fine texture is still thinned: 1,997 paths are removed from the same new scene
+before export. That is 25 percent of the unthinned **v5** scene, not a claim of
+25 percent fewer paths than v4. Whole clipped texture strokes are retained or
+removed together. The new scene has 1,486 layered objects instead of 2,455.
 This is an ambitious hand-guided tracing job, not one automatically executed
 continuous toolpath. Disconnected shading marks add substantial selection,
 plunge/retract and travel work. Splitting files does not reduce that workload.
 
-Compare gallery tabs **5. Layered v3 (before)** and **6. Reduced detail v4**.
+Compare gallery tabs **6. Smaller motifs v4** and **7. Larger motifs v5**.
 They retain the same illustrative line weights and share the selected zoom.
-The saved v3 proof is for visual comparison only, not a cutting import.
+The saved v3 and v4 proofs are for visual comparison only, not cutting imports.
 
 The v2 release remains the old wine-first arrangement; v3 is the denser
 whiskey-first arrangement. Use files from **one version only**. Never combine
-v3 and v4 cuts, which would duplicate retained paths, or mix their shading
-batches expecting the reduced appearance.
+v4 and v5 cuts or shading batches: the geometry and plant positions differ.
 
 ## Which files to transfer
 
 The [v3 release](https://github.com/taylorchasewhite/woodworking/releases/tag/bar-top-order-v3)
-contains the **older, denser** transfer ZIP, not the current v4 review. Use the
-matching v4 files below when testing this simplification.
+contains the **older, denser** transfer ZIP, not the current v5 review. Use the
+matching v5 files below when testing this enlargement.
 
 - **Complete design with placement references:**
   [master-botanicals-with-guides.svg](master-botanicals/master-botanicals-with-guides.svg).
@@ -129,11 +144,15 @@ bounding rectangle, not necessarily an accessible physical corner of the wood.
 
 See [workspace setup recommendations](https://support.shapertools.com/hc/en-us/articles/115002790173-Dos-Don-ts-of-Workspace-Setups).
 
-The v4 geometry test sampled 274,681 points along the actual exported curves;
-none were outside the measured wood, with about **1.04 inches minimum centerline
+The v5 geometry test sampled 234,612 points along the actual exported curves;
+none were outside the measured wood, with about **0.86 inches minimum centerline
 edge clearance**. A separate coordinate-based test confirms the plant order and
 the presence of both neighboring plant families at each new transition.
-This does not certify real placement, cutter footprint or finished-top accuracy.
+The actual engraving bounds remain nearly unchanged from v4: the width differs
+by about 0.08 inches and the height by about 0.32 inches. The source geometry
+retains the existing roughly 3-inch band and route; the wood outline and all
+blue registration guides are identical. This does not certify real placement,
+cutter footprint or finished-top accuracy.
 
 ## Complexity and working batches
 
@@ -216,8 +235,9 @@ Before the bar:
 5. Check the intended finish on a sample too; sanding/finish can diminish very
    shallow details. Record the chosen bit, depths and results in a new commit.
 
-The user has performed an initial physical test of v3; v4 responds to its
-wider-groove feedback but has not yet been physically tested. The actual groove
+The user has performed an initial physical test of v3 and reported further
+wider-bit concerns after reviewing the simplification. V5 has not yet been
+physically tested. The actual groove
 width in inches, bit and depth remain unspecified. This simplification is **not
 a cutter-clearance guarantee**: intersections and converging lines remain, and
 there is no new minimum-spacing claim. Repeat the actual-size scrap test before
@@ -232,6 +252,9 @@ committing to the bar top.
   geometry, refreshed transitions/crops and regenerated Origin batches.
 - `bar-top-detail-v4`: review revision with 25 percent fewer paths, removed only
   from fine texture, and an unchanged v3 proof for before/after comparison.
+- `bar-top-larger-motifs-v5`: roughly 40 percent larger motifs, fewer individual
+  plants, regenerated layering and a nearly unchanged engraving footprint.
+  Exact v3 and v4 proofs remain in the comparison gallery.
 
 Future shape, spacing, depth or workload changes should be committed with their
 matching exports and measurements. Keep the current version recoverable.

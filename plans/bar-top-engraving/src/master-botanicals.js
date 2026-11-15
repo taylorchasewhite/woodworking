@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 module.exports = function drawMaster(api) {
   const { motifPath, transform, totalLength, mapPoint } = api;
   const seed = 200731;
+  const motifScale = 1.4;
   let state = seed;
   const foregroundIds = new Set();
   const metadata = new Map();
@@ -16,11 +17,11 @@ module.exports = function drawMaster(api) {
   }
   const range = (a, b) => a + random() * (b - a);
   const sections = [
-    { key: 'whiskey', title: 'Whiskey / bourbon - rye stalks and husked corn', start: 0, end: 19, sourceStart: 43.5, stationScale: 1, description: 'The frieze begins with the existing rye fans and differently angled corn ears on the short arm. Raised kernel crowns, shaded side faces and partially peeled husks retain the detailed engraving style.' },
+    { key: 'whiskey', title: 'Whiskey / bourbon - rye stalks and husked corn', start: 0, end: 19, sourceStart: 43.5, stationScale: 1, description: 'Fewer, larger rye heads and leaves accompany two enlarged corn ears on the short arm. The ears lean at different angles to fit the existing band; raised kernels and peeled husks retain their form.' },
     { key: 'gin', title: 'Gin - juniper berries on leafy branches', start: 19, end: 29.5, sourceStart: 34.5, stationScale: 1, description: 'Whorled juniper sprays and berries follow the whiskey grains around the bend, growing from their own mostly concealed woody branch.' },
-    { key: 'beer', title: 'Beer - hops on bines and barley stalks', start: 29.5, end: 43.2, sourceStart: 19.3, stationScale: 13.7 / 15.2, description: 'Hops on a fine twining bine and barley on individual culms bridge juniper and wine. The existing composition is fitted longitudinally by about 10 percent; leaf height and botanical anatomy remain.' },
-    { key: 'wine', title: 'Wine - grapes and leaves on a flowing vine', start: 43.2, end: 62.5, sourceStart: 0, stationScale: 1, description: 'The lush woody grape vine, palmate serrated leaves, tendrils and seven hanging bunches occupy the long arm before the oak. Late grape foliage interleaves with the first small oak leaves.' },
-    { key: 'oak', title: 'White oak - layered leaves and angled acorns', start: 62.5, end: totalLength, sourceStart: 62.5, stationScale: 1, description: 'The oak ending stays in place. Quercus alba leaves spread at varied angles from woody twigs, with foreground leaves partly hiding selected acorns. Smaller first leaves overlap the ending grape vine.' },
+    { key: 'beer', title: 'Beer - hops on bines and barley stalks', start: 29.5, end: 43.2, sourceStart: 19.3, stationScale: 13.7 / 15.2, description: 'Fewer enlarged hop leaves, cones and barley heads bridge juniper and wine on their connected bine and culms. The section retains its established route span and overlaps at both ends.' },
+    { key: 'wine', title: 'Wine - grapes and leaves on a flowing vine', start: 43.2, end: 62.5, sourceStart: 0, stationScale: 1, description: 'Larger palmate leaves and larger individual grapes form fewer hanging bunches along the woody vine. The vine still fills the long-arm section and interleaves with the oak.' },
+    { key: 'oak', title: 'White oak - layered leaves and angled acorns', start: 62.5, end: totalLength, sourceStart: 62.5, stationScale: 1, description: 'Fewer enlarged Quercus alba leaves and four enlarged acorns occupy the same ending. Forward and backward leaves join woody twigs; selected foreground leaves partly hide angled fruit.' },
   ];
   const botanicalSections = Object.fromEntries([
     ['rye', 'whiskey'], ['corn', 'whiskey'], ['juniper', 'gin'],
@@ -220,6 +221,7 @@ module.exports = function drawMaster(api) {
   }
 
   function shoot(kind, from, to, width = 0.026, layer) {
+    width *= motifScale;
     const dx = to[0] - from[0], dy = to[1] - from[1];
     const bend = dy * 0.28;
     const shape = object(kind, from[0], 0, 0, 1, transform([
@@ -244,7 +246,7 @@ module.exports = function drawMaster(api) {
   }
 
   function vineY(s) {
-    return -0.30 + 0.26 * Math.sin(s * 0.47 - 0.65) + 0.07 * Math.sin(s * 1.02 + 0.3);
+    return -0.16 + 0.20 * Math.sin(s * 0.47 - 0.65) + 0.05 * Math.sin(s * 1.02 + 0.3);
   }
 
   function grapeVine() {
@@ -252,6 +254,7 @@ module.exports = function drawMaster(api) {
   }
 
   function support(kind, start, end, yAt, halfWidth) {
+    halfWidth *= motifScale;
     const top = [], bottom = [];
     const steps = Math.ceil((end - start) / 0.28);
     for (let i = 0; i <= steps; i++) {
@@ -277,7 +280,7 @@ module.exports = function drawMaster(api) {
 
   const hopsY = s => -0.39 + 0.18 * Math.sin((s - 18.2) * 0.66);
   const juniperY = s => -0.18 + 0.10 * Math.sin((s - 33.4) * 0.75);
-  const oakY = s => -0.40 + 0.16 * Math.sin((s - 60.4) * 0.9);
+  const oakY = s => -0.10 + 0.12 * Math.sin((s - 60.4) * 0.9);
 
   function round(kind, s, x, y, r, zVariation = 0) {
     const k = r * 0.5522847498;
@@ -297,12 +300,12 @@ module.exports = function drawMaster(api) {
     return shape;
   }
 
-  function grapeBunch(node, size = 1) {
-    const s = node - 0.42 * size, y = vineY(node) + 0.65 * size;
+  function grapeBunch(node, size = motifScale) {
+    const s = node - 0.42 * size, y = vineY(node) + 0.40 * size;
     shoot('grape-bunch-stalk', [node, vineY(node)], [s, y - 0.35 * size], 0.028 * size);
     const berries = [];
-    for (let row = 0; row < 5; row++) {
-      const count = [3, 4, 3, 2, 1][row];
+    for (let row = 0; row < 4; row++) {
+      const count = [3, 3, 2, 1][row];
       for (let j = 0; j < count; j++) {
         berries.push({
           x: ((j - (count - 1) / 2) * 0.24 + range(-0.045, 0.045)) * size,
@@ -351,10 +354,11 @@ module.exports = function drawMaster(api) {
       ['M', -0.12, -0.012], ['Q', 0.7, -0.034, 1.56, -0.01],
       ['L', 1.56, 0.018], ['Q', 0.7, 0.004, -0.12, 0.012], ['Z'],
     ]);
-    const count = barley ? 7 : 10;
+    const count = barley ? 6 : 8;
+    const spacing = (barley ? 6 * 0.18 : 9 * 0.125) / (count - 1);
     for (let i = 0; i < count; i++) {
       for (const side of [-1, 1]) {
-        const x = 0.21 + i * (barley ? 0.18 : 0.125);
+        const x = 0.21 + i * spacing;
         const y = side * (barley ? 0.125 : 0.085);
         const offset = transform([['M', x, y]], 0, shape.y, angle, size)[0];
         const grain = object(`${kind}-grain`, s + offset[1], offset[2], angle + side * 0.31, size, [
@@ -364,7 +368,7 @@ module.exports = function drawMaster(api) {
         grain.emit('grain-groove', [['M', -0.055, 0], ['Q', 0.035, -0.024, 0.126, -0.007]], true, 'hatch');
         grain.emit('grain-shadow', [['M', -0.05, 0.028], ['Q', 0.02, 0.036, 0.10, 0.015]], true, 'hatch');
         const awnLength = barley ? range(0.34, 0.51) : range(0.16, 0.27);
-        blade(`${kind}-awn`, s + offset[1] + 0.11, offset[2], angle + side * 0.24, awnLength / 1.57, 0.015);
+        blade(`${kind}-awn`, s + offset[1] + 0.11 * size, offset[2], angle + side * 0.24, awnLength * size / 1.57, 0.015);
       }
     }
   }
@@ -391,13 +395,13 @@ module.exports = function drawMaster(api) {
 
   function juniperSpray(s, y, side, length) {
     const twig = shoot('juniper-side-twig', [s, juniperY(s)], [s + length, y], 0.020, juniperSupport.z + 0.25);
-    for (let i = 0; i < 9; i++) {
-      const t = 0.10 + i * 0.099, p = twig.pointAt(t);
+    for (let i = 0; i < 7; i++) {
+      const t = 0.10 + i * 0.133, p = twig.pointAt(t);
       const before = twig.pointAt(t - 0.01), after = twig.pointAt(t + 0.01);
       const tangent = Math.atan2(after[1] - before[1], after[0] - before[0]);
       for (const [j, angle] of [-0.78, 0, 0.70].entries()) {
         const taper = Math.max(0.60, Math.min(1, (p[0] - 33.3) / 1.8, (47.5 - p[0]) / 2.0));
-        const length = range(0.32, 0.46) * taper, lean = tangent + side * angle + range(-0.085, 0.085);
+        const length = range(0.32, 0.46) * taper * motifScale, lean = tangent + side * angle + range(-0.085, 0.085);
         const needle = object(`juniper-whorled-needle-${j}`, p[0], p[1], lean, length / 0.43, [
           ['M', 0, 0], ['C', 0.10, -0.018, 0.29, -0.023, 0.43, -0.003],
           ['C', 0.27, 0.009, 0.08, 0.013, 0, 0], ['Z'],
@@ -407,21 +411,22 @@ module.exports = function drawMaster(api) {
     }
   }
   function juniperCluster(s, y) {
-    for (const [x, by] of [[-0.15, -0.05], [0.11, -0.14], [0.27, 0.11], [-0.035, 0.18], [0.23, 0.36]]) {
+    for (const [localX, localY] of [[-0.15, -0.05], [0.11, -0.14], [0.27, 0.11], [-0.035, 0.18]]) {
+      const x = localX * motifScale, by = localY * motifScale;
       shoot('juniper-berry-pedicel', [s - 0.13, juniperY(s - 0.13)], [s + x, y + by], 0.012, juniperSupport.z + 0.25);
-      const b = round('juniper-seed-cone', s, x, y + by, range(0.123, 0.145));
-      b.emit('three-part-scar', [['M', -0.045, 0.010], ['L', 0, -0.042], ['L', 0.047, 0.016]], true, 'hatch');
+      const b = round('juniper-seed-cone', s, x, y + by, range(0.123, 0.145) * motifScale);
+      b.emit('three-part-scar', transform([['M', -0.045, 0.010], ['L', 0, -0.042], ['L', 0.047, 0.016]], 0, 0, 0, motifScale), true, 'hatch');
     }
   }
 
-  function cornEar(s, y, angle) {
-    object('corn-ear-shank', s, y, angle, 1, [
+  function cornEar(s, y, angle, size = motifScale) {
+    object('corn-ear-shank', s, y, angle, size, [
       ['M', -0.02, 0.62], ['C', 0.02, 0.89, 0.01, 1.06, 0.08, 1.20],
       ['L', 0.12, 1.18], ['C', 0.055, 1.00, 0.07, 0.87, 0.025, 0.62], ['Z'],
     ]);
-    const stemLeaf = posePoint(s, y, angle, 1, 0.055, 1.02);
-    blade('corn-attached-stalk-leaf', stemLeaf[0], stemLeaf[1], angle - 1.17, 0.92, 0.22);
-    const back = object('corn-enclosing-back-husk', s, y, angle, 1, [
+    const stemLeaf = posePoint(s, y, angle, size, 0.055, 1.02);
+    blade('corn-attached-stalk-leaf', stemLeaf[0], stemLeaf[1], angle - 1.17, 0.92 * size, 0.22);
+    const back = object('corn-enclosing-back-husk', s, y, angle, size, [
       ['M', -0.06, 0.72], ['C', -0.22, 0.40, -0.36, 0.12, -0.55, -0.12],
       ['C', -0.69, 0.30, -0.50, 0.62, -0.06, 0.72], ['Z'],
     ]);
@@ -429,7 +434,7 @@ module.exports = function drawMaster(api) {
       back.emit(`back-husk-fibre-${i}`, [['M', -0.07 - i * 0.024, 0.70],
         ['C', -0.39 - i * 0.007, 0.47, -0.51 - i * 0.006, 0.25, -0.53 - i * 0.005, 0.01]], true, 'hatch');
     }
-    object('corn-inner-cob', s, y, angle, 1, [
+    object('corn-inner-cob', s, y, angle, size, [
       ['M', 0, -0.70], ['C', -0.10, -0.68, -0.18, -0.36, -0.17, 0.28],
       ['Q', -0.15, 0.61, 0, 0.69], ['Q', 0.17, 0.55, 0.17, 0.21],
       ['C', 0.18, -0.37, 0.10, -0.68, 0, -0.70], ['Z'],
@@ -449,7 +454,7 @@ module.exports = function drawMaster(api) {
         const w = xr - xl, h = row === 0 ? 0.095 : 0.115;
         const top = cy - h * 0.52, bottom = cy + h * 0.43;
         const root = bottom + 0.036 * (0.6 + 0.4 * Math.cos(phi));
-        const kernel = object('corn-raised-kernel', s, y, angle, 1, [
+        const kernel = object('corn-raised-kernel', s, y, angle, size, [
           ['M', xl + w * 0.12, top],
           ['C', xl - w * 0.035, top + h * 0.10, xl - w * 0.10, bottom - h * 0.08, xl + w * 0.10, bottom],
           ['L', rl, root], ['Q', (rl + rr) / 2, root + 0.009, rr, root],
@@ -468,7 +473,7 @@ module.exports = function drawMaster(api) {
         }
       }
     }
-    const front = object('corn-wrapped-front-husk', s, y, angle, 1, [
+    const front = object('corn-wrapped-front-husk', s, y, angle, size, [
       ['M', -0.12, 0.72], ['C', -0.29, 0.56, -0.19, 0.30, -0.03, 0.20],
       ['C', -0.055, 0.38, 0.05, 0.54, 0.30, 0.54],
       ['Q', 0.08, 0.85, -0.12, 0.72], ['Z'],
@@ -481,13 +486,13 @@ module.exports = function drawMaster(api) {
     front.emit('rolled-margin', [['M', -0.11, 0.66], ['C', -0.22, 0.49, -0.13, 0.33, -0.035, 0.25]], true, 'vein');
   }
 
-  function acorn(s, y, angle) {
-    const stalk = object('oak-acorn-peduncle', s, y, angle, 1, [
+  function acorn(s, y, angle, size = motifScale) {
+    const stalk = object('oak-acorn-peduncle', s, y, angle, size, [
       ['M', -0.025, -0.245], ['C', -0.026, -0.32, -0.075, -0.37, -0.035, -0.45],
       ['Q', 0.007, -0.478, 0.042, -0.455], ['C', 0.003, -0.393, 0.047, -0.33, 0.033, -0.24], ['Z'],
     ]);
     stalk.emit('stalk-groove', [['M', 0.004, -0.25], ['Q', -0.037, -0.36, 0.010, -0.44]], true, 'hatch');
-    const nut = object('oak-acorn-nut', s, y, angle, 1, [
+    const nut = object('oak-acorn-nut', s, y, angle, size, [
       ['M', -0.28, 0], ['C', -0.35, 0.33, -0.22, 0.61, 0.02, 0.75],
       ['C', 0.24, 0.55, 0.33, 0.21, 0.27, -0.02], ['Q', 0, 0.08, -0.28, 0], ['Z'],
     ]);
@@ -495,7 +500,7 @@ module.exports = function drawMaster(api) {
       const x = -0.25 + i * 0.027;
       nut.emit(`nut-shade-${i}`, [['M', x, -0.02], ['C', x - 0.045, 0.21, x - 0.01, 0.43, x * 0.22 + 0.02, 0.65]], true, 'hatch');
     }
-    const cap = object('oak-acorn-cup', s, y, angle, 1, [
+    const cap = object('oak-acorn-cup', s, y, angle, size, [
       ['M', -0.30, 0.015], ['C', -0.35, -0.12, -0.23, -0.26, -0.005, -0.27],
       ['C', 0.23, -0.25, 0.36, -0.10, 0.30, 0.015], ['Q', 0, 0.08, -0.30, 0.015], ['Z'],
     ]);
@@ -512,123 +517,119 @@ module.exports = function drawMaster(api) {
 
   // The back rank establishes foliage masses; the later ranks cut away hidden paths.
   grapeVine();
-  const grapeNodes = [1.45, 3.65, 5.60, 7.85, 10.35, 12.65, 15.00, 17.45, 19.70];
+  const grapeNodes = [1.3, 4.25, 7.2, 10.25, 13.3, 16.35, 19.35];
   const grapeLeaves = [];
   for (const [i, s] of grapeNodes.entries()) {
     const side = i % 2 ? 1 : -1;
-    const root = [s + 0.28, vineY(s) + side * 0.29];
+    const root = [s + 0.28, vineY(s) + side * 0.18];
     shoot('grape-leaf-petiole', [s, vineY(s)], root);
-    grapeLeaves.push({ s: root[0], y: root[1], angle: side * range(0.39, 0.64), scale: range(0.63, 0.78), front: true, folded: i % 4 === 2 });
+    grapeLeaves.push({ s: root[0], y: root[1], angle: side * range(0.27, 0.40), scale: range(0.63, 0.78) * motifScale, front: true, folded: i % 4 === 2 });
     if (i % 3 !== 2) {
-      const back = [s + 0.12, vineY(s) - side * 0.23];
+      const back = [s + 0.12, vineY(s) - side * 0.17];
       shoot('grape-back-petiole', [s, vineY(s)], back, 0.022);
-      grapeLeaves.push({ s: back[0], y: back[1], angle: -side * range(0.25, 0.47), scale: range(0.44, 0.57), front: false, folded: false });
+      grapeLeaves.push({ s: back[0], y: back[1], angle: -side * range(0.22, 0.34), scale: range(0.44, 0.57) * motifScale, front: false, folded: false });
     }
     if (i % 3 === 1) {
       const tip = [s + 1.10, vineY(s) - side * 0.32];
       shoot('grape-tendril-shoot', [s, vineY(s)], tip, 0.020);
-      tendril(tip[0], tip[1], 0.51);
+      tendril(tip[0], tip[1], 0.51 * motifScale);
     }
   }
-  for (const [i, s] of [2.45, 4.85, 6.70, 9.15, 11.50, 13.75, 16.15, 18.70].entries()) {
+  for (const [i, s] of [3.0, 8.8, 12.0, 17.8].entries()) {
     const side = i % 2 ? -1 : 1;
     const root = [s + 0.16, vineY(s) + side * 0.13];
     shoot('grape-fill-petiole', [s, vineY(s)], root, 0.023);
-    grapeLeaves.push({ s: root[0], y: root[1], angle: side * range(0.24, 0.43),
-      scale: range(0.65, 0.79), front: false, folded: false });
+    grapeLeaves.push({ s: root[0], y: root[1], angle: side * range(0.22, 0.34),
+      scale: range(0.65, 0.79) * motifScale, front: false, folded: false });
   }
   for (const plan of grapeLeaves.filter(p => !p.front)) grapeLeaf('grape-back-leaf', plan.s, plan.y, plan.angle, plan.scale, false);
-  const grapeBunchNodes = [1.60, 3.65, 7.85, 10.50, 15.00, 17.45];
+  const grapeBunchNodes = [2.0, 6.4, 10.8, 15.3];
   for (const s of grapeBunchNodes) grapeBunch(s);
-  grapeBunchNodes.push(20.30);
-  grapeBunch(20.30, 0.62);
+  grapeBunchNodes.push(20.10);
+  grapeBunch(20.10, 1.0);
   for (const plan of grapeLeaves.filter(p => p.front)) grapeLeaf('grape-front-leaf', plan.s, plan.y, plan.angle, plan.scale, plan.folded);
 
-  // Preserve the existing beer, gin and whiskey composition independently of wine edits.
+  // Independent section seeds keep the composition reproducible.
   state = 507810563;
   const hopsSupport = support('hops-twining-bine', 18.2, 36.6, hopsY, 0.023);
-  for (let i = 0, s = 18.7; s < 36; s += range(1.35, 1.95), i++) {
-    const y = range(-0.17, 0.21), angle = range(-0.29, 0.31), scale = range(0.67, 0.82);
+  for (let i = 0, s = 18.7; s < 36; s += range(1.95, 2.65), i++) {
+    const y = range(-0.17, 0.21), angle = range(-0.24, 0.25), scale = range(0.67, 0.82) * motifScale;
     shoot('hops-back-petiole', [s - 0.24, hopsY(s - 0.24)], [s, y], 0.018, hopsSupport.z + 0.25);
     leaf('hops-back-leaf', s, y, angle, scale, false, true);
   }
-  for (let i = 0, s = 18.0; s < 35.5; s += range(1.45, 2.10), i++) {
-    blade('barley-folded-leaf', s, range(-0.55, 0.60), (i % 2 ? -1 : 1) * range(0.10, 0.36), range(0.83, 1.16), 0.21);
-    grainHead('barley', s + 0.18, range(-0.35, 0.38), range(-0.18, 0.18), 0.86, true);
+  for (let i = 0, s = 18.0; s < 35.5; s += range(2.20, 2.80), i++) {
+    blade('barley-folded-leaf', s, range(-0.25, 0.25), (i % 2 ? -1 : 1) * range(0.10, 0.24), range(0.83, 1.16) * motifScale, 0.21);
+    grainHead('barley', s + 0.18, range(-0.25, 0.25), range(-0.18, 0.18), 0.86 * motifScale, true);
   }
-  for (const [i, s] of [20.5, 24.25, 28.2, 32.4].entries()) {
+  for (const [i, s] of [21.0, 27.0, 32.8].entries()) {
     const at = s + range(-0.15, 0.15), y = i % 2 ? -0.15 : 0.12, angle = range(-0.20, 0.22);
-    shoot('hops-cone-peduncle', [at - 0.3, hopsY(at - 0.3)], posePoint(at, y, angle, 1, 0, -0.58), 0.018, hopsSupport.z + 0.25);
-    hopCone(at, y, angle);
+    shoot('hops-cone-peduncle', [at - 0.3, hopsY(at - 0.3)], posePoint(at, y, angle, motifScale, 0, -0.58), 0.018, hopsSupport.z + 0.25);
+    hopCone(at, y, angle, motifScale);
   }
-  for (const s of [19.4, 23.3, 26.8, 30.4, 34.6]) {
+  for (const s of [19.8, 25.0, 30.2, 34.7]) {
     const y = range(-0.15, 0.15), angle = range(-0.38, 0.37);
     shoot('hops-front-petiole', [s - 0.28, hopsY(s - 0.28)], [s, y], 0.018, hopsSupport.z + 0.25);
-    leaf('hops-front-leaf', s, y, angle, 0.70, false, true);
+    leaf('hops-front-leaf', s, y, angle, 0.70 * motifScale, false, true);
   }
   shoot('hops-transition-petiole', [35.3, hopsY(35.3)], [35.55, -0.06], 0.016, hopsSupport.z + 0.25);
-  leaf('hops-transition-leaf', 35.55, -0.06, 0.44, 0.48, false, true);
-  shoot('hops-transition-cone-peduncle', [35.9, hopsY(35.9)], posePoint(36.2, 0.08, -0.26, 0.60, 0, -0.58), 0.016, hopsSupport.z + 0.25);
-  hopCone(36.2, 0.08, -0.26, 0.60);
+  leaf('hops-transition-leaf', 35.55, -0.06, 0.44, 0.48 * motifScale, false, true);
+  shoot('hops-transition-cone-peduncle', [35.9, hopsY(35.9)], posePoint(36.2, 0.08, -0.26, 0.60 * motifScale, 0, -0.58), 0.016, hopsSupport.z + 0.25);
+  hopCone(36.2, 0.08, -0.26, 0.60 * motifScale);
 
   const juniperSupport = support('juniper-primary-branch', 33.4, 46.6, juniperY, 0.030);
-  for (let i = 0, s = 33.6; s < 46.3; s += range(0.57, 0.83), i++) {
-    juniperSpray(s, (i % 2 ? -1 : 1) * range(0.39, 0.70), i % 2 ? -1 : 1, range(1.13, 1.48));
+  for (let i = 0, s = 33.6; s < 46.3; s += range(0.80, 1.16), i++) {
+    juniperSpray(s, (i % 2 ? -1 : 1) * range(0.39, 0.70), i % 2 ? -1 : 1, range(1.13, 1.48) * motifScale);
   }
-  for (const s of [34.6, 36.2, 37.8, 39.4, 41.1, 42.8, 44.3, 45.6]) juniperCluster(s, range(-0.16, 0.20));
-  for (let s = 34.1; s < 45.7; s += 1.02) juniperSpray(s, juniperY(s + 1.23), random() > 0.5 ? 1 : -1, 1.23);
+  for (const s of [34.7, 36.8, 39.0, 41.2, 43.4, 45.5]) juniperCluster(s, range(-0.16, 0.20));
+  for (let s = 34.1; s < 45.7; s += 1.43) juniperSpray(s, juniperY(s + 1.72), random() > 0.5 ? 1 : -1, 1.72);
 
-  // Keep the liked rye-head placement stable while the juniper section is revised.
   state = 1093289987;
-  for (let i = 0, s = 43.9; s < 64; s += range(0.94, 1.55), i++) {
-    blade('rye-ribbon-leaf', s, range(-0.38, 0.53), (i % 2 ? -1 : 1) * range(0.10, 0.28), range(0.92, 1.20), 0.24);
+  for (let i = 0, s = 43.9; s < 64; s += range(1.35, 2.15), i++) {
+    blade('rye-ribbon-leaf', s, range(-0.25, 0.25), (i % 2 ? -1 : 1) * range(0.10, 0.20), range(0.92, 1.20) * motifScale, 0.24);
   }
-  for (let s = 44.9; s < 62.8; s += range(1.25, 1.98)) grainHead('rye', s, range(-0.37, 0.48), range(-0.20, 0.18), 0.93);
+  for (let s = 45.55; s < 62.8; s += range(1.75, 2.60)) grainHead('rye', s, range(-0.25, 0.25), range(-0.20, 0.18), 0.93 * motifScale);
   for (const p of [
     { s: 44.8, y: 0.10, angle: -0.22, size: 0.70 },
-    { s: 52.9, y: 0.28, angle: -0.34, size: 0.88 },
-    { s: 53.25, y: -0.18, angle: 0.22, size: 0.82 },
-    { s: 53.8, y: 0.04, angle: 0.08, size: 0.92 },
+    { s: 53.2, y: 0.10, angle: -0.22, size: 0.90 },
     { s: 63.05, y: 0.13, angle: -0.17, size: 0.70 },
-  ]) grainHead('rye', p.s, p.y, p.angle, p.size);
-  const cornEars = [{ s: 49.6, y: 0.02, angle: -0.92 }, { s: 57.6, y: -0.07, angle: 0.46 }];
+  ]) grainHead('rye', p.s, p.y, p.angle, p.size * motifScale);
+  const cornEars = [{ s: 49.6, y: 0.02, angle: -1.25 }, { s: 57.6, y: -0.07, angle: 1.37 }];
   for (const p of cornEars) cornEar(p.s, p.y, p.angle);
 
   support('oak-primary-branch', 60.4, totalLength - 0.43, oakY, 0.035);
   const oakFruit = [
-    { s: 63.35, y: 0.07, angle: -0.68 },
-    { s: 64.10, y: -0.25, angle: 0.34 },
-    { s: 66.60, y: 0.22, angle: 0.52 },
-    { s: 67.48, y: -0.03, angle: -0.93 },
-    { s: 70.00, y: 0.05, angle: -0.18 },
+    { s: 63.35, y: 0.02, angle: -0.55 },
+    { s: 65.95, y: -0.08, angle: 0.03 },
+    { s: 67.00, y: 0.10, angle: 0.47 },
+    { s: 69.65, y: 0.05, angle: -0.25 },
   ];
   const oakLeaves = [];
-  const oakNodes = [60.95, 62.10, 63.15, 64.35, 65.40, 66.55, 67.65, 68.85, 69.90];
-  const oakAngles = [-0.50, 0.69, -0.28, 0.89, -0.63, 0.41, -0.76, 0.27, 0.73];
-  const oakScales = [0.52, 0.65, 0.87, 0.75, 0.79, 0.83, 0.71, 0.89, 0.76];
+  const oakNodes = [60.95, 62.45, 64.0, 65.6, 67.2, 68.8, 70.1];
+  const oakAngles = [-0.24, 0.31, -0.22, 0.37, -0.33, 0.27, Math.PI - 0.25];
+  const oakScales = [0.52, 0.75, 0.87, 0.79, 0.71, 0.89, 0.76];
   for (const [i, node] of oakNodes.entries()) {
     oakLeaves.push({ node, s: node + 0.20, y: oakY(node) + (i % 2 ? 1 : -1) * 0.19,
-      angle: oakAngles[i], scale: oakScales[i], small: false, foreground: false });
+      angle: oakAngles[i], scale: oakScales[i] * motifScale, small: false, foreground: false });
   }
-  for (const [i, node] of [62.0, 63.65, 65.05, 66.9, 68.45, 70.55].entries()) {
-    const backward = i === 1 || i >= 4;
+  for (const [i, node] of [62.0, 64.6, 67.2, 70.3].entries()) {
+    const backward = i % 2 === 1;
     oakLeaves.push({ node, s: node + 0.12, y: oakY(node) + (i % 2 ? -1 : 1) * 0.18,
-      angle: backward ? Math.PI + (i === 1 ? 0.38 : -0.43) : (i % 2 ? -0.62 : 0.53),
-      scale: [0.54, 0.61, 0.63, 0.57, 0.69, 0.60][i], small: true, foreground: false });
+      angle: backward ? Math.PI + (i === 1 ? 0.28 : -0.33) : 0.30,
+      scale: [0.54, 0.63, 0.57, 0.69][i] * motifScale, small: true, foreground: false });
   }
-  for (const [i, node] of [61.5, 63.85, 65.8, 67.8, 69.35].entries()) {
+  for (const [i, node] of [61.5, 65.2, 68.9].entries()) {
     oakLeaves.push({ node, s: node + 0.12, y: oakY(node) + 0.045,
-      angle: [0.11, -0.12, 0.06, -0.17, 0.12][i],
-      scale: 0.62, small: true, foreground: false });
+      angle: [0.11, -0.12, 0.06][i],
+      scale: 0.62 * motifScale, small: true, foreground: false });
   }
   oakLeaves.push(
-    { node: 63.22, s: 63.50, y: 0.17, angle: 0.35, scale: 0.63, small: false, foreground: true },
-    { node: 65.78, s: 65.95, y: 0.32, angle: 0.18, scale: 0.72, small: false, foreground: true },
-    { node: 69.37, s: 69.68, y: 0.44, angle: -0.22, scale: 0.65, small: false, foreground: true },
+    { node: 63.22, s: 63.50, y: 0.15, angle: 0.25, scale: 0.63 * motifScale, small: false, foreground: true },
+    { node: 65.78, s: 66.55, y: 0.20, angle: 0.12, scale: 0.72 * motifScale, small: false, foreground: true },
+    { node: 69.37, s: 69.75, y: 0.17, angle: -0.17, scale: 0.65 * motifScale, small: false, foreground: true },
   );
   for (const p of oakLeaves) shoot('oak-leaf-petiole', [p.node, oakY(p.node)], [p.s, p.y], 0.021);
   for (const p of oakFruit) shoot('oak-fruit-twig', [p.s - 0.38, oakY(p.s - 0.38)],
-    posePoint(p.s, p.y, p.angle, 1, 0.01, -0.455), 0.023);
+    posePoint(p.s, p.y, p.angle, motifScale, 0.01, -0.455), 0.023);
   for (const p of oakLeaves.filter(p => !p.foreground)) leaf(p.small ? 'oak-middle-leaf' : 'oak-back-leaf', p.s, p.y, p.angle, p.scale, true, p.small);
   const oakAcorns = oakFruit.map(p => ({ ...acorn(p.s, p.y, p.angle), angle: p.angle }));
   for (const p of oakLeaves.filter(p => p.foreground)) leaf('oak-foreground-leaf', p.s, p.y, p.angle, p.scale, true, p.small);
@@ -637,13 +638,13 @@ module.exports = function drawMaster(api) {
     { key: 'whiskey-gin-transition', title: 'Transition - rye into juniper', stationWindow: [17.3, 21.8], description: 'Late rye heads overlap the first smaller juniper sprays as the engraving approaches the bend. The grains keep their individual culms beside the woody juniper branch.' },
     { key: 'gin-beer-transition', title: 'Transition - juniper into hops and barley', stationWindow: [27.8, 32.2], description: 'Ending juniper sprays interleave with the first hop leaves and barley stalks. Each plant retains its own concealed support.' },
     { key: 'beer-wine-transition', title: 'Transition - hops and barley into grape vine', stationWindow: [41.5, 46.5], description: 'Smaller late hop leaves and a cone overlap the beginning grape vine, broad palmate leaves and first hanging bunches.' },
-    { key: 'wine-oak-transition', title: 'Transition - grape vine into white oak', stationWindow: [60.2, 65.0], description: 'A smaller late grape bunch and palmate foliage recede beneath the first small oak leaves, leading into the unchanged layered acorn ending.' },
+    { key: 'wine-oak-transition', title: 'Transition - grape vine into white oak', stationWindow: [60.2, 65.0], description: 'The ending grape bunch and enlarged palmate foliage recede beneath the first oak leaves, leading into fewer, larger leaves and acorns.' },
   ];
   const closeSections = [
-    { key: 'corn-close', title: 'Close-up - corn with raised kernels and peeled husks', stationWindow: [placedStation('corn', 48.8), placedStation('corn', 59.0)], description: 'The two existing corn ears now sit on the short arm. Curved kernel crowns, shaded side faces, bumpy outer contours and partly peeled husks retain the modeled form.' },
+    { key: 'corn-close', title: 'Close-up - corn with raised kernels and peeled husks', stationWindow: [placedStation('corn', 48.8), placedStation('corn', 59.0)], description: 'Two enlarged ears lie at different angles among fewer, larger rye heads. The kernel crowns, side faces and peeled husks are enlarged together, not merely drawn with thicker strokes.' },
     { key: 'gin-close', title: 'Close-up - leafy juniper branch and berries', stationWindow: [placedStation('juniper', 35.8), placedStation('juniper', 41.5)], description: 'Whorled needle sprays and berry pedicels follow the bend, joined to their own woody juniper branch.' },
-    { key: 'wine-close', title: 'Close-up - grapes growing on a vine', stationWindow: [placedStation('grape', 2.2), placedStation('grape', 7.6)], description: 'The existing lush grape foliage and hanging bunches now grow along the long arm, after the beer plants and before the oak.' },
-    { key: 'oak-close', title: 'Close-up - naturally layered oak and angled acorns', viewBox: [52.0, 4.3, 10.4, 3.8], rotate: 0, description: 'The oak ending remains in place. White-oak leaves grow forward, backward and sideways from connected twigs, partly concealing selected angled acorns.' },
+    { key: 'wine-close', title: 'Close-up - grapes growing on a vine', stationWindow: [placedStation('grape', 2.2), placedStation('grape', 7.6)], description: 'Fewer enlarged leaves and bunches fill the same vine section. Individual grapes are larger, with fewer grapes per bunch and less fine texture.' },
+    { key: 'oak-close', title: 'Close-up - naturally layered oak and angled acorns', viewBox: [52.0, 4.3, 10.4, 3.8], rotate: 0, description: 'Larger white-oak leaves and acorns grow at varied angles from connected twigs. The ending stays in the same area, with foreground foliage still partly concealing selected fruit.' },
   ];
   for (const section of [...sections, ...transitionSections, ...closeSections.filter(section => section.stationWindow)]) {
     const [start, end] = section.stationWindow || [section.start, section.end];
@@ -680,9 +681,10 @@ module.exports = function drawMaster(api) {
   return {
     seed, sections, foregroundIds, metadata, masksFor, keepInsideFor, structuralSupports, oakAcorns,
     stats: {
-      layoutVersion: 'bar-top-detail-v4',
+      layoutVersion: 'bar-top-larger-motifs-v5',
+      motifScaleTarget: motifScale,
       plantOrder: ['whiskey', 'gin', 'beer', 'wine', 'oak'],
-      layeredObjects: shapes.length, noGenericGarlandSpine: true, sourceHatchSpacingTypicalInches: [0.027, 0.060],
+      layeredObjects: shapes.length, noGenericGarlandSpine: true,
       botanicalStructure: {
         oakLeafSpecies: 'Quercus alba', oakLobesPerLeaf: 7,
         acornPeduncles: shapes.filter(s => s.id.startsWith('oak-acorn-peduncle-')).length,

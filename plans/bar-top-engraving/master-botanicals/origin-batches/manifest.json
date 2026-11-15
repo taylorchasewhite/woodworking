@@ -5,8 +5,8 @@
   },
   "widthInches": 64.125,
   "heightInches": 20,
-  "totalPaths": 9354,
-  "layoutVersion": "bar-top-detail-v4",
+  "totalPaths": 5991,
+  "layoutVersion": "bar-top-larger-motifs-v5",
   "plantOrder": [
     "whiskey",
     "gin",
@@ -15,41 +15,42 @@
     "oak"
   ],
   "detailReduction": {
-    "baselineVersion": "bar-top-order-v3",
+    "baselineVersion": "bar-top-larger-motifs-v5",
+    "baselineDescription": "Same scene before fine-texture thinning",
     "targetOverallFraction": 0.25,
-    "baselinePaths": 12472,
-    "retainedPaths": 9354,
-    "removedPaths": 3118,
+    "baselinePaths": 7988,
+    "retainedPaths": 5991,
+    "removedPaths": 1997,
     "overallReductionFraction": 0.25,
-    "texturePathsBefore": 6205,
-    "texturePathsRemoved": 3118,
-    "textureReductionFraction": 0.5025,
-    "protectedPaths": 6267,
+    "texturePathsBefore": 4103,
+    "texturePathsRemoved": 1997,
+    "textureReductionFraction": 0.48672,
+    "protectedPaths": 3885,
     "sectionReductions": [
       {
         "section": "whiskey",
-        "texturePathsBefore": 1341,
-        "texturePathsRemoved": 676
+        "texturePathsBefore": 1007,
+        "texturePathsRemoved": 486
       },
       {
         "section": "gin",
-        "texturePathsBefore": 549,
-        "texturePathsRemoved": 274
+        "texturePathsBefore": 383,
+        "texturePathsRemoved": 190
       },
       {
         "section": "beer",
-        "texturePathsBefore": 1457,
-        "texturePathsRemoved": 732
+        "texturePathsBefore": 1092,
+        "texturePathsRemoved": 531
       },
       {
         "section": "wine",
-        "texturePathsBefore": 1290,
-        "texturePathsRemoved": 648
+        "texturePathsBefore": 576,
+        "texturePathsRemoved": 281
       },
       {
         "section": "oak",
-        "texturePathsBefore": 1568,
-        "texturePathsRemoved": 788
+        "texturePathsBefore": 1045,
+        "texturePathsRemoved": 509
       }
     ]
   },
@@ -59,71 +60,71 @@
       "section": "whiskey",
       "pass": "linework",
       "filename": "whiskey-linework.svg",
-      "pathCount": 1315,
-      "bytes": 1116588
+      "pathCount": 914,
+      "bytes": 918016
     },
     {
       "section": "whiskey",
       "pass": "shading",
       "filename": "whiskey-shading.svg",
-      "pathCount": 665,
-      "bytes": 321039
+      "pathCount": 521,
+      "bytes": 272403
     },
     {
       "section": "gin",
       "pass": "linework",
       "filename": "gin-linework.svg",
-      "pathCount": 714,
-      "bytes": 318639
+      "pathCount": 437,
+      "bytes": 252031
     },
     {
       "section": "gin",
       "pass": "shading",
       "filename": "gin-shading.svg",
-      "pathCount": 2425,
-      "bytes": 1209132
+      "pathCount": 1355,
+      "bytes": 861566
     },
     {
       "section": "beer",
       "pass": "linework",
       "filename": "beer-linework.svg",
-      "pathCount": 1163,
-      "bytes": 965599
+      "pathCount": 864,
+      "bytes": 885985
     },
     {
       "section": "beer",
       "pass": "shading",
       "filename": "beer-shading.svg",
-      "pathCount": 725,
-      "bytes": 360654
+      "pathCount": 561,
+      "bytes": 343929
     },
     {
       "section": "wine",
       "pass": "linework",
       "filename": "wine-linework.svg",
-      "pathCount": 467,
-      "bytes": 606396
+      "pathCount": 222,
+      "bytes": 384923
     },
     {
       "section": "wine",
       "pass": "shading",
       "filename": "wine-shading.svg",
-      "pathCount": 642,
-      "bytes": 202720
+      "pathCount": 295,
+      "bytes": 98760
     },
     {
       "section": "oak",
       "pass": "linework",
       "filename": "oak-linework.svg",
-      "pathCount": 458,
-      "bytes": 502490
+      "pathCount": 286,
+      "bytes": 446705
     },
     {
       "section": "oak",
       "pass": "shading",
       "filename": "oak-shading.svg",
-      "pathCount": 780,
-      "bytes": 413304
+      "pathCount": 536,
+      "bytes": 371966
     }
   ]
 }

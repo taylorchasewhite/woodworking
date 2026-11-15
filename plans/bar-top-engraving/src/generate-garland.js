@@ -6,7 +6,7 @@ const isMaster = process.argv.includes('--master');
 const isTavern = isMaster || process.argv.includes('--tavern');
 const baseOutput = path.resolve(__dirname, '..');
 const output = path.join(baseOutput, isMaster ? 'master-botanicals' : isTavern ? 'tavern-botanicals' : 'revision-2');
-const designTitle = isMaster ? 'Layered botanical engraving - Whiskey Gin Beer Wine Oak - reduced detail v4' : isTavern ? 'US / UK tavern botanicals' : 'Detailed holiday garland - revision 2';
+const designTitle = isMaster ? 'Layered botanical engraving - Whiskey Gin Beer Wine Oak - larger motifs v5' : isTavern ? 'US / UK tavern botanicals' : 'Detailed holiday garland - revision 2';
 const pathFilename = isMaster ? 'master-botanicals-paths.svg' : isTavern ? 'tavern-botanicals-paths.svg' : 'holiday-garland-paths.svg';
 const guideFilename = isMaster ? 'master-botanicals-with-guides.svg' : isTavern ? 'tavern-botanicals-with-guides.svg' : 'holiday-garland-with-guides.svg';
 const dimensions = { short: 23.375, bend: 20, long: 49.25, width: 8.5 };
@@ -355,6 +355,34 @@ const foreground = engraving.filter(item => isTavern ? tavern.foregroundIds.has(
   const points = flatten(item.d);
   return { id: item.id, points, box: bounds(points) };
 });
+if (isMaster) {
+  const motifFamilies = {
+    grapeLeaves: /^grape-(?:front|back)-leaf-\d+-silhouette$/,
+    grapes: /^grape-fruit-\d+-silhouette$/,
+    hopLeaves: /^hops-(?:back|front|transition)-leaf-\d+-silhouette$/,
+    hopBracts: /^hops-overlapping-bract-\d+-silhouette$/,
+    juniperNeedles: /^juniper-whorled-needle-\d+-\d+-silhouette$/,
+    juniperBerries: /^juniper-seed-cone-\d+-silhouette$/,
+    barleyGrains: /^barley-grain-\d+-silhouette$/,
+    ryeGrains: /^rye-grain-\d+-silhouette$/,
+    cornKernels: /^corn-raised-kernel-\d+-silhouette$/,
+    oakLeaves: /^oak-(?:back|middle|foreground)-leaf-\d+-silhouette$/,
+    acorns: /^oak-acorn-nut-\d+-silhouette$/,
+  };
+  tavern.stats.motifMetrics = Object.fromEntries(Object.entries(motifFamilies).map(([family, pattern]) => {
+    const areas = foreground.filter(mask => pattern.test(mask.id)).map(mask => {
+      const sum = mask.points.reduce((total, point, i, points) => {
+        const next = points[(i + 1) % points.length];
+        return total + point[0] * next[1] - next[0] * point[1];
+      }, 0);
+      return Math.abs(sum) / 2;
+    }).sort((a, b) => a - b);
+    assert(areas.length > 0 && areas.every(area => area > 0), `Missing or invalid motif silhouettes: ${family}`);
+    const middle = Math.floor(areas.length / 2);
+    const median = areas.length % 2 ? areas[middle] : (areas[middle - 1] + areas[middle]) / 2;
+    return [family, { count: areas.length, medianSilhouetteAreaSquareInches: Number(median.toFixed(6)) }];
+  }));
+}
 let trimmedPaths = 0;
 let hiddenPaths = 0;
 let discardedFragments = 0;
@@ -448,7 +476,7 @@ if (isMaster) {
   });
   engraving.splice(0, engraving.length, ...engraving.filter(item => !removedSources.has(item.sourceId || item.id)));
   tavern.stats.detailReduction = {
-    baselineVersion: 'bar-top-order-v3', targetOverallFraction: 0.25,
+    baselineVersion: tavern.stats.layoutVersion, baselineDescription: 'Same scene before fine-texture thinning', targetOverallFraction: 0.25,
     baselinePaths, retainedPaths: engraving.length, removedPaths,
     overallReductionFraction: Number((removedPaths / baselinePaths).toFixed(5)),
     texturePathsBefore: texturePaths, texturePathsRemoved: removedPaths,
@@ -462,6 +490,7 @@ if (isMaster) {
   let checkedPoints = 0;
   let totalPathLength = 0;
   let exposedSpinePaths = 0;
+  const footprint = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
   for (const item of engraving) {
     const source = { id: item.sourceId || item.id };
     const points = flatten(item.d);
@@ -474,6 +503,10 @@ if (isMaster) {
       if (i) totalPathLength += Math.hypot(points[i][0] - points[i - 1][0], points[i][1] - points[i - 1][1]);
       // Rounding SVG coordinates can shift an occlusion boundary by a few microns.
       const p = points[i];
+      footprint.minX = Math.min(footprint.minX, p[0]);
+      footprint.maxX = Math.max(footprint.maxX, p[0]);
+      footprint.minY = Math.min(footprint.minY, p[1]);
+      footprint.maxY = Math.max(footprint.maxY, p[1]);
       const margin = 0.00003;
       for (const mask of masks) {
         if (inside(p, mask) &&
@@ -511,6 +544,7 @@ if (isMaster) {
   const visibleCornSideFaces = engraving.filter(item => item.id.includes('-kernel-side-face')).length;
   assert(visibleCornSideFaces >= 20, `Insufficient visible raised-kernel side faces: ${visibleCornSideFaces}`);
   assert(!engraving.some(item => item.id.startsWith('corn-tapered-ear-') || item.id.startsWith('corn-curved-kernel-')));
+  tavern.stats.engravingFootprint = Object.fromEntries(Object.entries(footprint).map(([key, value]) => [key, Number(value.toFixed(5))]));
   occlusionVerification = { checkedPoints, exposedSpinePaths, structuralCoverage, oakLayering, visibleCornSideFaces,
     approximateEngravedLineLengthInches: Number(totalPathLength.toFixed(1)) };
 }
@@ -584,8 +618,8 @@ ${dimension(66.5, 0, 66.5, W, '8 1/2 in', true)}
 <text class="note" x="32.5" y="15.3">All three boards: 8 1/2 in wide</text>
 <text class="note" x="32.5" y="16.5">Both miter joints: 45 degrees</text>
 <text class="note" x="32.5" y="17.7">Overall extent: 64 1/8 x 20 in (derived)</text>
-<text class="note" x="32.5" y="19">${isMaster ? 'Whiskey + bourbon / gin / beer / wine / oak - v4' : isTavern ? 'Wine / beer / gin / rye whiskey + bourbon / oak' : 'White pine, pine cones, holly leaves + berries,'}</text>
-<text class="note" x="32.5" y="20.2">${isMaster ? '25% fewer cuts; plant shapes and layering retained.' : isTavern ? 'Distinct sections with softly overlapping transitions.' : 'mistletoe and poinsettia - denser botanical clusters.'}</text>
+<text class="note" x="32.5" y="19">${isMaster ? 'Whiskey + bourbon / gin / beer / wine / oak - v5' : isTavern ? 'Wine / beer / gin / rye whiskey + bourbon / oak' : 'White pine, pine cones, holly leaves + berries,'}</text>
+<text class="note" x="32.5" y="20.2">${isMaster ? 'Larger motifs, fewer plants; same engraving band.' : isTavern ? 'Distinct sections with softly overlapping transitions.' : 'mistletoe and poinsettia - denser botanical clusters.'}</text>
 <text class="note" x="0" y="25">TRUE PROPORTIONS - one drawing unit = one inch. Proof only: do not import this annotated wood layout as a cut file.</text>
 </svg>`;
 fs.writeFileSync(path.join(output, 'measured-oak-garland-proof.svg'), `<?xml version="1.0" encoding="UTF-8"?>\n${plan}`);
@@ -665,7 +699,7 @@ footer p{font-size:13px;max-width:62%}a{color:#426247}nav{white-space:nowrap}
 <header><div><h1>${isMaster ? 'Layered foliage - an engraved botanical frieze' : isTavern ? 'The plants behind the pour' : 'A fuller botanical holiday garland'}</h1><p>23 3/8 in short arm &middot; 20 in bend &middot; 49 1/4 in long arm &middot; 8 1/2 in width throughout</p></div><span class="badge">${isMaster ? 'LAYERED / HATCHED' : isTavern ? 'US / UK BOTANICALS' : 'REVISION 2'} &nbsp; / &nbsp; TOP-DOWN PROOF</span></header>
 ${plan}
 <section class="details">
-<figure><figcaption>Botanical detail, enlarged<small>${isMaster ? 'Version 4: about 25% fewer engraving paths overall, achieved by thinning fine texture rather than changing the plant shapes, needles, main veins or placement. The whiskey / gin / beer / wine / oak arrangement is unchanged. Compare the v3 and v4 tabs in the gallery.' : isTavern ? 'Common juniper transitions into rye and corn. Explore all five sections on the comparison page.' : 'The same engraving paths: layered pine-cone scales, veined holly, five-needle white-pine bundles, berries, paired mistletoe leaves and a layered poinsettia.'}</small></figcaption>${detail(isMaster ? tavern.sections.find(section => section.key === 'wine-close').viewBox.join(' ') : '24.5 5.15 17.5 3.5', 'Enlarged detailed botanical garland', 'repeat')}</figure>
+<figure><figcaption>Botanical detail, enlarged<small>${isMaster ? 'Version 5 enlarges the individual motifs by about 40% and uses fewer leaves, berries, cones and grain heads within the existing engraving band. Fine texture is still thinned. The wood dimensions and whiskey / gin / beer / wine / oak order remain unchanged. Compare v4 and v5 in the gallery.' : isTavern ? 'Common juniper transitions into rye and corn. Explore all five sections on the comparison page.' : 'The same engraving paths: layered pine-cone scales, veined holly, five-needle white-pine bundles, berries, paired mistletoe leaves and a layered poinsettia.'}</small></figcaption>${detail(isMaster ? tavern.sections.find(section => section.key === 'wine-close').viewBox.join(' ') : '24.5 5.15 17.5 3.5', 'Enlarged detailed botanical garland', 'repeat')}</figure>
 </section>
 <footer><p><strong>Design proof, not a cut-depth prescription.</strong> ${isMaster ? 'The foliage occupies roughly a 3 in band centered 2.2 in from the exposed edge. Depth is suggested by actual overlapping outlines and hatch paths, not raster shadows or relief. Preview line weights are illustrative, not selected cutter widths; fine shading requires bit/depth selection and a physical sample.' : 'The botanical band is roughly 2 in wide; its center is 1.75 in inside the exposed edge. Stem lines stop beneath the main clusters instead of running through their centers. Fine botanical details require an appropriate bit and scrap test; cutter and depth remain unset.'} The oak grain comes from your photo. Gray SVG strokes encode on-line engraving; blue strokes are non-cutting guides.</p>
 <nav>${isTavern ? `<a href="../design-gallery.html#${isMaster ? 'master' : 'tavern'}">Compare all designs</a><br>` : ''}<a href="measured-oak-garland-proof.svg" download>Measured proof SVG</a><br><a href="${pathFilename}" download>Engraving paths SVG</a><br><a href="${guideFilename}" download>Origin SVG with blue board guides</a><br>${isMaster ? '<a href="../SHAPER-ORIGIN.md">Import, batch files and scrap-test guide</a><br>' : ''}<a href="https://support.shapertools.com/hc/en-us/articles/115002721473-Cut-Type-Encoding">Shaper cut-color reference</a></nav></footer>

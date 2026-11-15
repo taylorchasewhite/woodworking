@@ -6,11 +6,11 @@ const proof = fs.readFileSync(path.join(root, 'measured-oak-garland-proof.svg'),
 const source = proof.slice(proof.indexOf('<svg'));
 const design = JSON.parse(fs.readFileSync(path.join(root, 'design.json'), 'utf8'));
 for (const [key, sectionKey, title, caption] of [
-  ['wine', 'wine-close', 'Lusher grapes on a flowing vine - engraving close-up', 'More overlapping palmate leaves and hanging grape bunches; the connected vine is mostly concealed. All lines are actual SVG engraving paths.'],
-  ['oak', 'oak-close', 'Natural white-oak layers and angled acorns', 'Selected foreground leaves partly hide the acorns; other fruit remains clear. Forward, backward and sideways leaves join woody twigs. All overlaps remove hidden engraving lines.'],
-  ['gin', 'gin-close', 'Juniper sprays and berries on a woody branch', 'Common juniper grows on woody branches, not vines. Needle whorls, lateral shoots and berry pedicels connect beneath the lush sprays.'],
-  ['corn', 'corn-close', 'Corn with raised kernel crowns and peeled husks', 'Kernels project beyond the inner cob; crowns, shaded side walls and bumpy outer contours describe relief. Differently angled ears sit among fuller rye stalks. All marks are actual engraving paths.'],
-  ['corn-kernel', 'corn-kernel-close', 'Raised corn kernels - crown and side-face detail', 'Rounded crowns project beyond their narrower attachment roots. Side walls, underside hatching and individual edge kernels create the relief using engraving paths alone.'],
+  ['wine', 'wine-close', 'V5 - larger grape leaves and fewer, larger grapes', 'Fewer enlarged palmate leaves and hanging bunches fill the same vine section. All lines are actual SVG engraving paths.'],
+  ['oak', 'oak-close', 'V5 - larger white-oak leaves and angled acorns', 'Fewer, larger leaves join woody twigs and partly hide selected enlarged acorns; one fruit remains clear of foreground leaves. Hidden lines are removed from the engraving paths.'],
+  ['gin', 'gin-close', 'V5 - larger juniper needles and berries', 'Fewer needle whorls and berry clusters grow on connected woody branches. Individual needles and berries are genuinely enlarged.'],
+  ['corn', 'corn-close', 'V5 - enlarged corn ears among fewer rye heads', 'Kernel crowns, side walls and peeled husks are enlarged together. The differently angled ears and fewer, larger rye heads remain within the existing engraving band.'],
+  ['corn-kernel', 'corn-kernel-close', 'V5 - enlarged raised corn kernels', 'Larger rounded crowns, side walls and projecting edge kernels retain their modeled form. Fine texture is thinned; the cut lines remain actual SVG geometry.'],
 ]) {
   const section = design.sections.find(s => s.key === sectionKey);
   assert(section, `Missing detail section: ${sectionKey}`);

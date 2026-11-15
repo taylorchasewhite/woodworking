@@ -5,6 +5,7 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const tavern = JSON.parse(fs.readFileSync(path.join(root, 'tavern-botanicals', 'design.json'), 'utf8'));
 const master = JSON.parse(fs.readFileSync(path.join(root, 'master-botanicals', 'design.json'), 'utf8'));
+const previous = JSON.parse(fs.readFileSync(path.join(root, 'comparisons', 'bar-top-detail-v4.json'), 'utf8'));
 assert.deepEqual(tavern.sections.map(s => s.key), ['wine', 'beer', 'gin', 'whiskey', 'oak']);
 const designs = [
   {
@@ -44,15 +45,21 @@ const designs = [
   {
     id: 'master-v3', title: 'Layered botanical frieze - v3 before simplification', tab: '5. Layered v3 (before)', type: 'svg',
     proof: 'comparisons/bar-top-order-v3-proof.svg',
-    description: 'The exact v3 proof from before the wider-bit test, retained for visual comparison. This tab has no cutting downloads; the complete original files remain in the bar-top-order-v3 Git tag and release. Switch between tabs 5 and 6 to compare the same enlarged section at the same illustrative line weight.',
-    sections: master.sections,
+    description: 'The exact v3 proof from before texture reduction, retained for visual comparison. This tab has no cutting downloads; the complete original files remain in the bar-top-order-v3 Git tag and release.',
+    sections: previous.sections,
   },
   {
-    id: 'master', title: 'Layered botanical frieze - reduced detail v4', tab: '6. Reduced detail v4', type: 'svg',
+    id: 'master-v4', title: 'Layered botanical frieze - reduced detail v4', tab: '6. Smaller motifs v4', type: 'svg',
+    proof: 'comparisons/bar-top-detail-v4-proof.svg',
+    description: 'The exact v4 proof: 9,354 cuts, with the original smaller motifs and reduced fine texture. Compare this tab with v5 for larger individual plants and fewer items in the same footprint. This is a comparison proof, not a cutting download; the original files remain in the bar-top-detail-v4 Git tag.',
+    sections: previous.sections,
+  },
+  {
+    id: 'master', title: 'Layered botanical frieze - larger motifs v5', tab: '7. Larger motifs v5', type: 'svg',
     proof: 'master-botanicals/measured-oak-garland-proof.svg',
     paths: 'master-botanicals/master-botanicals-paths.svg',
     guides: 'master-botanicals/master-botanicals-with-guides.svg',
-    description: `Wider-bit revision: ${master.stats.detailReduction.removedPaths.toLocaleString('en-US')} of ${master.stats.detailReduction.baselinePaths.toLocaleString('en-US')} engraving paths removed (about 25% overall), entirely from fine texture. Outlines, juniper needles, main veins, raised kernel side faces, measured placement and the whiskey / gin / beer / wine / oak order are unchanged. Approximately half the fine hatch cuts remain, giving the wider groove more breathing room. Compare tab 5 before and tab 6 after; the preview weights are the same, not a calibrated prediction of your groove width. Designs 1-4 are unchanged.`,
+    description: `Larger-motif revision: roughly 40% larger individual leaves, fruit and grains, with fewer items filling the same engraving band. Grape leaves: ${previous.stats.motifMetrics.grapeLeaves.count} to ${master.stats.motifMetrics.grapeLeaves.count}; individual grapes: ${previous.stats.motifMetrics.grapes.count} to ${master.stats.motifMetrics.grapes.count}; oak leaves: ${previous.stats.motifMetrics.oakLeaves.count} to ${master.stats.motifMetrics.oakLeaves.count}. The wood dimensions and whiskey / gin / beer / wine / oak sequence are unchanged. The contours and interior details are genuinely enlarged, not just shown with thicker strokes. Compare tabs 6 and 7; both use the same illustrative line weights. Designs 1-4 are unchanged.`,
     sections: master.sections,
   },
 ];
@@ -94,7 +101,7 @@ footer{border-top:1px solid #d3dacd;margin-top:24px;padding-top:17px;font-size:1
 @media(max-width:850px){body{padding:8px}#sheet{padding:19px}h1{font-size:27px}.caption{display:block}.actions{margin-top:13px}#detail-svg{height:250px}.tabs button{font-size:13px;padding:8px}.zoom-tools select{max-width:100%}}
 </style></head><body><main id="sheet">
 <h1>Bar-top engraving design notebook</h1>
-<p class="intro">Switch designs instantly, then inspect a section below. Compare tabs 5 and 6 for the wider-bit simplification; both use the same illustrative line weights.</p>
+<p class="intro">Switch designs instantly, then inspect a section below. Compare tabs 6 and 7 for fewer, larger motifs in the same measured footprint. Both use the same illustrative line weights.</p>
 <div class="tabs" role="tablist" aria-label="Engraving designs">
 ${designs.map(d => `<button id="tab-${d.id}" type="button" role="tab" aria-selected="${d.id === 'master'}" aria-controls="design-panel" tabindex="${d.id === 'master' ? 0 : -1}" data-design="${d.id}">${d.tab}</button>`).join('')}
 </div>

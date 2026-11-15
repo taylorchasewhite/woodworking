@@ -45,7 +45,7 @@ test('ten batches partition the complete design exactly without scaling or dupli
   const directory = 'master-botanicals';
   const manifest = JSON.parse(read(path.join(directory, 'origin-batches', 'manifest.json')));
   assert.deepEqual(manifest.encoding, { onLine: '#808080', guide: '#0000ff' });
-  assert.equal(manifest.layoutVersion, 'bar-top-detail-v4');
+  assert.equal(manifest.layoutVersion, 'bar-top-larger-motifs-v5');
   assert.deepEqual(manifest.plantOrder, ['whiskey', 'gin', 'beer', 'wine', 'oak']);
   assert.equal(manifest.batches.length, 10);
   const full = paths(read(path.join(directory, 'master-botanicals-paths.svg')));
@@ -76,7 +76,9 @@ test('v4 removes a quarter of actual cuts only from fine texture and preserves v
     .filter(item => item.stroke === '#553822')
     .map(item => ({ ...item, id: item.id.replace(/^plan-/, '') }));
   assert.equal(original.length, 12472);
-  const current = paths(read(path.join('master-botanicals', 'master-botanicals-paths.svg')));
+  const current = paths(read(path.join('comparisons', 'bar-top-detail-v4-proof.svg')))
+    .filter(item => item.stroke === '#553822')
+    .map(item => ({ ...item, id: item.id.replace(/^plan-/, '') }));
   const originalById = new Map(original.map(item => [item.id, item]));
   const currentById = new Map(current.map(item => [item.id, item]));
   const isTexture = item => item['stroke-width'] === '0.0075' && !/-silhouette(?:-visible-\d+)?$/.test(item.id);
@@ -100,7 +102,7 @@ test('v4 removes a quarter of actual cuts only from fine texture and preserves v
     const retained = ids.filter(id => currentById.has(id)).length;
     assert(retained === 0 || retained === ids.length, 'A clipped texture stroke was only partly removed');
   }
-  const stats = JSON.parse(read(path.join('master-botanicals', 'design.json'))).stats;
+  const stats = JSON.parse(read(path.join('comparisons', 'bar-top-detail-v4.json'))).stats;
   const reduction = stats.detailReduction;
   assert.equal(stats.layoutVersion, 'bar-top-detail-v4');
   assert.equal(reduction.baselinePaths, original.length);
@@ -112,9 +114,39 @@ test('v4 removes a quarter of actual cuts only from fine texture and preserves v
     const fraction = section.texturePathsRemoved / section.texturePathsBefore;
     assert(fraction > 0.48 && fraction < 0.53, `Uneven texture thinning in ${section.section}`);
   }
-  const manifest = JSON.parse(read(path.join('master-botanicals', 'origin-batches', 'manifest.json')));
-  assert.deepEqual(manifest.detailReduction, reduction);
   t.diagnostic(`${removed.length}/${original.length} total cuts removed; ${original.length - texture.length} structural paths unchanged`);
+});
+
+test('v5 enlarges actual silhouettes and reduces motif counts rather than just stroke widths', t => {
+  const before = JSON.parse(read(path.join('comparisons', 'bar-top-detail-v4.json'))).stats;
+  const after = JSON.parse(read(path.join('master-botanicals', 'design.json'))).stats;
+  assert.equal(after.layoutVersion, 'bar-top-larger-motifs-v5');
+  assert.equal(after.motifScaleTarget, 1.4);
+  assert(after.layeredObjects < before.layeredObjects * 0.85, 'Need materially fewer objects');
+  for (const [family, original] of Object.entries(before.motifMetrics)) {
+    const revised = after.motifMetrics[family];
+    const ratio = Math.sqrt(revised.medianSilhouetteAreaSquareInches / original.medianSilhouetteAreaSquareInches);
+    assert(ratio >= 1.33 && ratio <= 1.50, `${family} did not become roughly 40% larger: ${ratio}`);
+    if (family === 'cornKernels') assert.equal(revised.count, original.count, 'Keep the two modeled corn ears');
+    else assert(revised.count < original.count, `Need fewer ${family}`);
+    t.diagnostic(`${family}: ${original.count} -> ${revised.count}, median linear-size ratio ${ratio.toFixed(2)}`);
+  }
+  const manifest = JSON.parse(read(path.join('master-botanicals', 'origin-batches', 'manifest.json')));
+  assert(manifest.totalPaths < before.detailReduction.retainedPaths, 'Need fewer cuts than v4');
+  assert.deepEqual(manifest.detailReduction, after.detailReduction);
+  assert.equal(after.detailReduction.baselineVersion, after.layoutVersion);
+});
+
+test('v5 preserves a similar actual engraving footprint on the unchanged wood', () => {
+  const before = JSON.parse(read(path.join('comparisons', 'bar-top-detail-v4.json'))).stats.engravingFootprint;
+  const after = JSON.parse(read(path.join('master-botanicals', 'design.json'))).stats.engravingFootprint;
+  for (const key of ['minX', 'maxX', 'minY', 'maxY']) {
+    assert(Math.abs(after[key] - before[key]) < 0.7, `Footprint shifted too far: ${key}`);
+  }
+  for (const [minimum, maximum] of [['minX', 'maxX'], ['minY', 'maxY']]) {
+    const ratio = (after[maximum] - after[minimum]) / (before[maximum] - before[minimum]);
+    assert(ratio > 0.95 && ratio < 1.05, 'Footprint extent changed by more than 5 percent');
+  }
 });
 
 test('all metadata-defined gallery regions retain their measured coordinate system', () => {
