@@ -45,7 +45,7 @@ test('ten batches partition the complete design exactly without scaling or dupli
   const directory = 'master-botanicals';
   const manifest = JSON.parse(read(path.join(directory, 'origin-batches', 'manifest.json')));
   assert.deepEqual(manifest.encoding, { onLine: '#808080', guide: '#0000ff' });
-  assert.equal(manifest.layoutVersion, 'bar-top-larger-motifs-v5');
+  assert.equal(manifest.layoutVersion, 'bar-top-refinements-v6');
   assert.deepEqual(manifest.plantOrder, ['whiskey', 'gin', 'beer', 'wine', 'oak']);
   assert.equal(manifest.batches.length, 10);
   const full = paths(read(path.join(directory, 'master-botanicals-paths.svg')));
@@ -119,7 +119,7 @@ test('v4 removes a quarter of actual cuts only from fine texture and preserves v
 
 test('v5 enlarges actual silhouettes and reduces motif counts rather than just stroke widths', t => {
   const before = JSON.parse(read(path.join('comparisons', 'bar-top-detail-v4.json'))).stats;
-  const after = JSON.parse(read(path.join('master-botanicals', 'design.json'))).stats;
+  const after = JSON.parse(read(path.join('comparisons', 'bar-top-larger-motifs-v5.json'))).stats;
   assert.equal(after.layoutVersion, 'bar-top-larger-motifs-v5');
   assert.equal(after.motifScaleTarget, 1.4);
   assert(after.layeredObjects < before.layeredObjects * 0.85, 'Need materially fewer objects');
@@ -131,15 +131,13 @@ test('v5 enlarges actual silhouettes and reduces motif counts rather than just s
     else assert(revised.count < original.count, `Need fewer ${family}`);
     t.diagnostic(`${family}: ${original.count} -> ${revised.count}, median linear-size ratio ${ratio.toFixed(2)}`);
   }
-  const manifest = JSON.parse(read(path.join('master-botanicals', 'origin-batches', 'manifest.json')));
-  assert(manifest.totalPaths < before.detailReduction.retainedPaths, 'Need fewer cuts than v4');
-  assert.deepEqual(manifest.detailReduction, after.detailReduction);
+  assert(after.detailReduction.retainedPaths < before.detailReduction.retainedPaths, 'Need fewer cuts than v4');
   assert.equal(after.detailReduction.baselineVersion, after.layoutVersion);
 });
 
 test('v5 preserves a similar actual engraving footprint on the unchanged wood', () => {
   const before = JSON.parse(read(path.join('comparisons', 'bar-top-detail-v4.json'))).stats.engravingFootprint;
-  const after = JSON.parse(read(path.join('master-botanicals', 'design.json'))).stats.engravingFootprint;
+  const after = JSON.parse(read(path.join('comparisons', 'bar-top-larger-motifs-v5.json'))).stats.engravingFootprint;
   for (const key of ['minX', 'maxX', 'minY', 'maxY']) {
     assert(Math.abs(after[key] - before[key]) < 0.7, `Footprint shifted too far: ${key}`);
   }
@@ -147,6 +145,58 @@ test('v5 preserves a similar actual engraving footprint on the unchanged wood', 
     const ratio = (after[maximum] - after[minimum]) / (before[maximum] - before[minimum]);
     assert(ratio > 0.95 && ratio < 1.05, 'Footprint extent changed by more than 5 percent');
   }
+});
+
+test('v6 juniper stems use single centerlines without bark, parallel outlines or interior grooves', t => {
+  const stem = /^juniper-(?:primary-branch|side-twig|berry-pedicel)-/;
+  const before = paths(read(path.join('comparisons', 'bar-top-larger-motifs-v5-proof.svg')))
+    .filter(item => item.stroke === '#553822' && stem.test(item.id.replace(/^plan-/, '')));
+  const current = paths(read(path.join('master-botanicals', 'master-botanicals-paths.svg'))).filter(item => stem.test(item.id));
+  assert(current.length > 0 && current.length < before.length * 0.7, 'Need materially fewer stem cuts');
+  for (const item of current) {
+    assert.match(item.id, /-(?:branch|stem)-centerline(?:-visible-\d+)?$/);
+    assert.doesNotMatch(item.d, /Z/);
+  }
+  const stats = JSON.parse(read(path.join('master-botanicals', 'design.json'))).stats;
+  assert.equal(stats.juniperStemStyle, 'single-line');
+  t.diagnostic(`Juniper stem cuts: ${before.length} -> ${current.length}`);
+});
+
+test('v6 shortens both long bare wine-vine stretches without removing all visible flowing stem', t => {
+  const before = JSON.parse(read(path.join('comparisons', 'bar-top-larger-motifs-v5.json'))).stats;
+  const after = JSON.parse(read(path.join('master-botanicals', 'design.json'))).stats;
+  const oldWine = before.structuralCoverage.find(branch => branch.kind === 'grape-woody-vine');
+  const newWine = after.structuralCoverage.find(branch => branch.kind === 'grape-woody-vine');
+  const targets = [...oldWine.exposedRuns].sort((a, b) => b.lengthInches - a.lengthInches).slice(0, 2);
+  assert.equal(targets.length, 2);
+  for (const target of targets) {
+    const overlapping = newWine.exposedRuns.filter(run =>
+      run.sourceWindow[0] < target.sourceWindow[1] && run.sourceWindow[1] > target.sourceWindow[0]);
+    const longest = Math.max(0, ...overlapping.map(run => run.lengthInches));
+    assert(longest > 0.1 && longest < target.lengthInches * 0.75, 'Shorten the bare run by at least 25%, but keep some stem');
+    t.diagnostic(`Bare vine run: ${target.lengthInches.toFixed(3)} -> ${longest.toFixed(3)} in`);
+  }
+  assert.equal(after.motifMetrics.grapeLeaves.count, before.motifMetrics.grapeLeaves.count + 2);
+});
+
+test('v6 widens the band 5% without lengthwise stretching or changing other plant counts', () => {
+  const before = JSON.parse(read(path.join('comparisons', 'bar-top-larger-motifs-v5.json'))).stats;
+  const after = JSON.parse(read(path.join('master-botanicals', 'design.json'))).stats;
+  assert.equal(after.layoutVersion, 'bar-top-refinements-v6');
+  assert.equal(after.bandNormalScale, 1.05);
+  assert.equal(after.nominalBandWidthInches, 3.108);
+  for (const [family, original] of Object.entries(before.motifMetrics)) {
+    if (family === 'grapeLeaves') continue;
+    const revised = after.motifMetrics[family];
+    assert.equal(revised.count, original.count, `Unexpected count change: ${family}`);
+    const ratio = revised.medianSilhouetteAreaSquareInches / original.medianSilhouetteAreaSquareInches;
+    assert(ratio > 1.04 && ratio < 1.06, `The drawn ${family} silhouettes did not widen by about 5%: ${ratio}`);
+  }
+  const oldWidth = before.engravingFootprint.maxX - before.engravingFootprint.minX;
+  const newWidth = after.engravingFootprint.maxX - after.engravingFootprint.minX;
+  assert(Math.abs(newWidth - oldWidth) < 0.05, 'The design was stretched lengthwise');
+  const manifest = JSON.parse(read(path.join('master-botanicals', 'origin-batches', 'manifest.json')));
+  assert.deepEqual(manifest.detailReduction, after.detailReduction);
 });
 
 test('all metadata-defined gallery regions retain their measured coordinate system', () => {

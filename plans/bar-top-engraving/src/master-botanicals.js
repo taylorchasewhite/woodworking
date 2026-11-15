@@ -18,7 +18,7 @@ module.exports = function drawMaster(api) {
   const range = (a, b) => a + random() * (b - a);
   const sections = [
     { key: 'whiskey', title: 'Whiskey / bourbon - rye stalks and husked corn', start: 0, end: 19, sourceStart: 43.5, stationScale: 1, description: 'Fewer, larger rye heads and leaves accompany two enlarged corn ears on the short arm. The ears lean at different angles to fit the existing band; raised kernels and peeled husks retain their form.' },
-    { key: 'gin', title: 'Gin - juniper berries on leafy branches', start: 19, end: 29.5, sourceStart: 34.5, stationScale: 1, description: 'Whorled juniper sprays and berries follow the whiskey grains around the bend, growing from their own mostly concealed woody branch.' },
+    { key: 'gin', title: 'Gin - juniper berries on leafy branches', start: 19, end: 29.5, sourceStart: 34.5, stationScale: 1, description: 'Whorled juniper sprays and berries follow the bend on simple single-line stems. Bark marks, parallel twig outlines and interior stem grooves are omitted; the connections remain largely concealed by foliage.' },
     { key: 'beer', title: 'Beer - hops on bines and barley stalks', start: 29.5, end: 43.2, sourceStart: 19.3, stationScale: 13.7 / 15.2, description: 'Fewer enlarged hop leaves, cones and barley heads bridge juniper and wine on their connected bine and culms. The section retains its established route span and overlaps at both ends.' },
     { key: 'wine', title: 'Wine - grapes and leaves on a flowing vine', start: 43.2, end: 62.5, sourceStart: 0, stationScale: 1, description: 'Larger palmate leaves and larger individual grapes form fewer hanging bunches along the woody vine. The vine still fills the long-arm section and interleaves with the oak.' },
     { key: 'oak', title: 'White oak - layered leaves and angled acorns', start: 62.5, end: totalLength, sourceStart: 62.5, stationScale: 1, description: 'Fewer enlarged Quercus alba leaves and four enlarged acorns occupy the same ending. Forward and backward leaves join woody twigs; selected foreground leaves partly hide angled fruit.' },
@@ -231,7 +231,13 @@ module.exports = function drawMaster(api) {
       ['C', dx * 0.72, dy * 0.82 + width, dx * 0.30, bend + width, 0, width], ['Z'],
     ], 0, from[1]), layer);
     assert.equal(shape.scale, 1, `Attachment rescaled away from its node: ${shape.id}`);
-    shape.emit('shoot-groove', transform([['M', 0, 0], ['C', dx * 0.30, bend, dx * 0.72, dy * 0.82, dx, dy]], 0, from[1]), true, 'hatch');
+    const centerline = transform([['M', 0, 0], ['C', dx * 0.30, bend, dx * 0.72, dy * 0.82, dx, dy]], 0, from[1]);
+    if (kind.startsWith('juniper-')) {
+      metadata.get(shape.contourId).maskOnly = true;
+      shape.emit('stem-centerline', centerline, true, 'vein');
+    } else {
+      shape.emit('shoot-groove', centerline, true, 'hatch');
+    }
     shape.pointAt = t => {
       const u = 1 - t;
       return [from[0] + dx * (3 * u * u * t * 0.30 + 3 * u * t * t * 0.72 + t ** 3),
@@ -264,13 +270,19 @@ module.exports = function drawMaster(api) {
       bottom.unshift([s - start, yAt(s) + width]);
     }
     const branch = object(kind, start, 0, 0, 1, spline([...top, ...bottom], true));
-    for (let s = start + 0.25, i = 0; s < end - 0.65; s += 0.96, i++) {
-      branch.emit(`bark-${i}`, spline([[s - start, yAt(s) + 0.009],
-        [s + 0.26 - start, yAt(s + 0.26) + 0.012],
-        [s + 0.51 - start, yAt(s + 0.51) + 0.006]]), true, 'hatch');
+    if (kind.startsWith('juniper-')) {
+      // Keep the closed envelope for layering, but engrave only the stem's centerline.
+      metadata.get(branch.contourId).maskOnly = true;
+      branch.emit('branch-centerline', spline(top.map(([x]) => [x, yAt(start + x)])), true, 'vein');
+    } else {
+      for (let s = start + 0.25, i = 0; s < end - 0.65; s += 0.96, i++) {
+        branch.emit(`bark-${i}`, spline([[s - start, yAt(s) + 0.009],
+          [s + 0.26 - start, yAt(s + 0.26) + 0.012],
+          [s + 0.51 - start, yAt(s + 0.51) + 0.006]]), true, 'hatch');
+      }
     }
     const samples = Math.ceil((end - start) / 0.035);
-    structuralSupports.push({ kind, contourId: branch.contourId,
+    structuralSupports.push({ kind, contourId: branch.contourId, sourceStart: start, sourceEnd: end,
       points: Array.from({ length: samples + 1 }, (_, i) => {
         const s = start + (end - start) * i / samples;
         return mapPoint(placedStation(kind, s), yAt(s));
@@ -516,7 +528,7 @@ module.exports = function drawMaster(api) {
   }
 
   // The back rank establishes foliage masses; the later ranks cut away hidden paths.
-  grapeVine();
+  const grapeSupport = grapeVine();
   const grapeNodes = [1.3, 4.25, 7.2, 10.25, 13.3, 16.35, 19.35];
   const grapeLeaves = [];
   for (const [i, s] of grapeNodes.entries()) {
@@ -548,6 +560,16 @@ module.exports = function drawMaster(api) {
   grapeBunchNodes.push(20.10);
   grapeBunch(20.10, 1.0);
   for (const plan of grapeLeaves.filter(p => p.front)) grapeLeaf('grape-front-leaf', plan.s, plan.y, plan.angle, plan.scale, plan.folded);
+  for (const plan of [
+    { s: 6.97, angle: -0.20, scale: 0.58 * motifScale },
+    { s: 15.98, angle: 0.22, scale: 0.60 * motifScale },
+  ]) {
+    const y = vineY(plan.s) + 0.11;
+    const node = plan.s - 0.28;
+    shoot('grape-gap-petiole', [node, vineY(node)], [plan.s, y], 0.023, grapeSupport.z + 0.25);
+    grapeLeaf('grape-front-leaf', plan.s, y, plan.angle, plan.scale, false);
+    grapeLeaves.push({ ...plan, y, front: true, folded: false });
+  }
 
   // Independent section seeds keep the composition reproducible.
   state = 507810563;
@@ -642,8 +664,8 @@ module.exports = function drawMaster(api) {
   ];
   const closeSections = [
     { key: 'corn-close', title: 'Close-up - corn with raised kernels and peeled husks', stationWindow: [placedStation('corn', 48.8), placedStation('corn', 59.0)], description: 'Two enlarged ears lie at different angles among fewer, larger rye heads. The kernel crowns, side faces and peeled husks are enlarged together, not merely drawn with thicker strokes.' },
-    { key: 'gin-close', title: 'Close-up - leafy juniper branch and berries', stationWindow: [placedStation('juniper', 35.8), placedStation('juniper', 41.5)], description: 'Whorled needle sprays and berry pedicels follow the bend, joined to their own woody juniper branch.' },
-    { key: 'wine-close', title: 'Close-up - grapes growing on a vine', stationWindow: [placedStation('grape', 2.2), placedStation('grape', 7.6)], description: 'Fewer enlarged leaves and bunches fill the same vine section. Individual grapes are larger, with fewer grapes per bunch and less fine texture.' },
+    { key: 'gin-close', title: 'Close-up - leafy juniper branch and berries', stationWindow: [placedStation('juniper', 35.8), placedStation('juniper', 41.5)], description: 'Single-line branch, twig and berry-stem connections replace the previous parallel contours, bark marks and interior stem grooves. The needles and berries remain unchanged apart from the wider band.' },
+    { key: 'wine-close', title: 'Close-up - grapes growing on a vine', stationWindow: [placedStation('grape', 2.2), placedStation('grape', 7.6)], description: 'Two attached leaves shorten the longest exposed vine stretches without eliminating the flowing stem entirely. The enlarged leaves and grape bunches fill a five-percent-wider band.' },
     { key: 'oak-close', title: 'Close-up - naturally layered oak and angled acorns', viewBox: [52.0, 4.3, 10.4, 3.8], rotate: 0, description: 'Larger white-oak leaves and acorns grow at varied angles from connected twigs. The ending stays in the same area, with foreground foliage still partly concealing selected fruit.' },
   ];
   for (const section of [...sections, ...transitionSections, ...closeSections.filter(section => section.stationWindow)]) {
@@ -681,7 +703,8 @@ module.exports = function drawMaster(api) {
   return {
     seed, sections, foregroundIds, metadata, masksFor, keepInsideFor, structuralSupports, oakAcorns,
     stats: {
-      layoutVersion: 'bar-top-larger-motifs-v5',
+      layoutVersion: 'bar-top-refinements-v6',
+      juniperStemStyle: 'single-line',
       motifScaleTarget: motifScale,
       plantOrder: ['whiskey', 'gin', 'beer', 'wine', 'oak'],
       layeredObjects: shapes.length, noGenericGarlandSpine: true,

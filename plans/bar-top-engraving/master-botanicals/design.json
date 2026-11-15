@@ -1,5 +1,5 @@
 {
-  "title": "Layered botanical engraving - Whiskey Gin Beer Wine Oak - larger motifs v5",
+  "title": "Layered botanical engraving - Whiskey Gin Beer Wine Oak - refined stems and spacing v6",
   "seed": 200731,
   "sections": [
     {
@@ -25,7 +25,7 @@
         20.299999999999997,
         26
       ],
-      "description": "Whorled needle sprays and berry pedicels follow the bend, joined to their own woody juniper branch.",
+      "description": "Single-line branch, twig and berry-stem connections replace the previous parallel contours, bark marks and interior stem grooves. The needles and berries remain unchanged apart from the wider band.",
       "viewBox": [
         19.0293,
         9.3668,
@@ -41,7 +41,7 @@
         45.400000000000006,
         50.800000000000004
       ],
-      "description": "Fewer enlarged leaves and bunches fill the same vine section. Individual grapes are larger, with fewer grapes per bunch and less fine texture.",
+      "description": "Two attached leaves shorten the longest exposed vine stretches without eliminating the flowing stem entirely. The enlarged leaves and grape bunches fill a five-percent-wider band.",
       "viewBox": [
         34.4164,
         4.2759,
@@ -67,7 +67,7 @@
       "title": "Detail - raised corn kernels and side faces",
       "viewBox": [
         5.950000000000001,
-        16.615756978652453,
+        16.61675697865245,
         2.3,
         2.2
       ],
@@ -161,7 +161,7 @@
       "end": 29.5,
       "sourceStart": 34.5,
       "stationScale": 1,
-      "description": "Whorled juniper sprays and berries follow the whiskey grains around the bend, growing from their own mostly concealed woody branch.",
+      "description": "Whorled juniper sprays and berries follow the bend on simple single-line stems. Bark marks, parallel twig outlines and interior stem grooves are omitted; the connections remain largely concealed by foliage.",
       "viewBox": [
         18.0878,
         5.864,
@@ -220,7 +220,8 @@
     }
   ],
   "stats": {
-    "layoutVersion": "bar-top-larger-motifs-v5",
+    "layoutVersion": "bar-top-refinements-v6",
+    "juniperStemStyle": "single-line",
     "motifScaleTarget": 1.4,
     "plantOrder": [
       "whiskey",
@@ -229,14 +230,14 @@
       "wine",
       "oak"
     ],
-    "layeredObjects": 1486,
+    "layeredObjects": 1490,
     "noGenericGarlandSpine": true,
     "botanicalStructure": {
       "oakLeafSpecies": "Quercus alba",
       "oakLobesPerLeaf": 7,
       "acornPeduncles": 4,
       "woodyGrapeVines": 1,
-      "grapeLeafPetioles": 16,
+      "grapeLeafPetioles": 18,
       "hangingGrapeBunches": 5,
       "woodyOakBranches": 1,
       "oakLeafPetioles": 17,
@@ -260,97 +261,360 @@
       ],
       "raisedCornKernels": 96
     },
+    "bandNormalScale": 1.05,
+    "nominalBandWidthInches": 3.108,
     "motifMetrics": {
       "grapeLeaves": {
-        "count": 16,
-        "medianSilhouetteAreaSquareInches": 2.024598
+        "count": 18,
+        "medianSilhouetteAreaSquareInches": 2.074028
       },
       "grapes": {
         "count": 45,
-        "medianSilhouetteAreaSquareInches": 0.142548
+        "medianSilhouetteAreaSquareInches": 0.149676
       },
       "hopLeaves": {
         "count": 13,
-        "medianSilhouetteAreaSquareInches": 1.38765
+        "medianSilhouetteAreaSquareInches": 1.458114
       },
       "hopBracts": {
         "count": 44,
-        "medianSilhouetteAreaSquareInches": 0.28102
+        "medianSilhouetteAreaSquareInches": 0.293752
       },
       "juniperNeedles": {
         "count": 483,
-        "medianSilhouetteAreaSquareInches": 0.010402
+        "medianSilhouetteAreaSquareInches": 0.010902
       },
       "juniperBerries": {
         "count": 24,
-        "medianSilhouetteAreaSquareInches": 0.109823
+        "medianSilhouetteAreaSquareInches": 0.115367
       },
       "barleyGrains": {
         "count": 96,
-        "medianSilhouetteAreaSquareInches": 0.025152
+        "medianSilhouetteAreaSquareInches": 0.02641
       },
       "ryeGrains": {
         "count": 176,
-        "medianSilhouetteAreaSquareInches": 0.032618
+        "medianSilhouetteAreaSquareInches": 0.03425
       },
       "cornKernels": {
         "count": 96,
-        "medianSilhouetteAreaSquareInches": 0.026761
+        "medianSilhouetteAreaSquareInches": 0.028099
       },
       "oakLeaves": {
         "count": 17,
-        "medianSilhouetteAreaSquareInches": 1.241103
+        "medianSilhouetteAreaSquareInches": 1.303168
       },
       "acorns": {
         "count": 4,
-        "medianSilhouetteAreaSquareInches": 0.634216
+        "medianSilhouetteAreaSquareInches": 0.665942
       }
     },
     "detailReduction": {
-      "baselineVersion": "bar-top-larger-motifs-v5",
+      "baselineVersion": "bar-top-refinements-v6",
       "baselineDescription": "Same scene before fine-texture thinning",
       "targetOverallFraction": 0.25,
-      "baselinePaths": 7988,
-      "retainedPaths": 5991,
-      "removedPaths": 1997,
-      "overallReductionFraction": 0.25,
-      "texturePathsBefore": 4103,
-      "texturePathsRemoved": 1997,
-      "textureReductionFraction": 0.48672,
-      "protectedPaths": 3885,
+      "baselinePaths": 7747,
+      "retainedPaths": 5810,
+      "removedPaths": 1937,
+      "overallReductionFraction": 0.25003,
+      "texturePathsBefore": 4049,
+      "texturePathsRemoved": 1937,
+      "textureReductionFraction": 0.47839,
+      "protectedPaths": 3698,
       "sectionReductions": [
         {
           "section": "whiskey",
-          "texturePathsBefore": 1007,
-          "texturePathsRemoved": 486
+          "texturePathsBefore": 1012,
+          "texturePathsRemoved": 484
         },
         {
           "section": "gin",
-          "texturePathsBefore": 383,
-          "texturePathsRemoved": 190
+          "texturePathsBefore": 266,
+          "texturePathsRemoved": 127
         },
         {
           "section": "beer",
-          "texturePathsBefore": 1092,
-          "texturePathsRemoved": 531
+          "texturePathsBefore": 1097,
+          "texturePathsRemoved": 525
         },
         {
           "section": "wine",
-          "texturePathsBefore": 576,
-          "texturePathsRemoved": 281
+          "texturePathsBefore": 629,
+          "texturePathsRemoved": 301
         },
         {
           "section": "oak",
           "texturePathsBefore": 1045,
-          "texturePathsRemoved": 509
+          "texturePathsRemoved": 500
         }
       ]
     },
+    "structuralCoverage": [
+      {
+        "kind": "grape-woody-vine",
+        "sampledPoints": 583,
+        "hiddenByFoliageFraction": 0.909,
+        "exposedRuns": [
+          {
+            "sourceWindow": [
+              2.478,
+              2.6878
+            ],
+            "lengthInches": 0.211
+          },
+          {
+            "sourceWindow": [
+              2.8277,
+              3.0375
+            ],
+            "lengthInches": 0.2106
+          },
+          {
+            "sourceWindow": [
+              6.4291,
+              6.7438
+            ],
+            "lengthInches": 0.3154
+          },
+          {
+            "sourceWindow": [
+              11.5691,
+              11.8838
+            ],
+            "lengthInches": 0.3172
+          },
+          {
+            "sourceWindow": [
+              12.0236,
+              12.0586
+            ],
+            "lengthInches": 0.0352
+          },
+          {
+            "sourceWindow": [
+              15.2754,
+              15.8349
+            ],
+            "lengthInches": 0.5626
+          }
+        ]
+      },
+      {
+        "kind": "hops-twining-bine",
+        "sampledPoints": 527,
+        "hiddenByFoliageFraction": 0.706,
+        "exposedRuns": [
+          {
+            "sourceWindow": [
+              18.3049,
+              18.4798
+            ],
+            "lengthInches": 0.1616
+          },
+          {
+            "sourceWindow": [
+              18.5498,
+              18.6198
+            ],
+            "lengthInches": 0.0649
+          },
+          {
+            "sourceWindow": [
+              22.6076,
+              24.2867
+            ],
+            "lengthInches": 1.5191
+          },
+          {
+            "sourceWindow": [
+              24.7414,
+              25.1962
+            ],
+            "lengthInches": 0.4151
+          },
+          {
+            "sourceWindow": [
+              27.5399,
+              27.7498
+            ],
+            "lengthInches": 0.1909
+          },
+          {
+            "sourceWindow": [
+              29.5688,
+              30.1635
+            ],
+            "lengthInches": 0.5361
+          },
+          {
+            "sourceWindow": [
+              31.9125,
+              32.0875
+            ],
+            "lengthInches": 0.158
+          },
+          {
+            "sourceWindow": [
+              33.6266,
+              33.6966
+            ],
+            "lengthInches": 0.0635
+          },
+          {
+            "sourceWindow": [
+              33.7665,
+              33.9065
+            ],
+            "lengthInches": 0.1266
+          },
+          {
+            "sourceWindow": [
+              34.0814,
+              34.8859
+            ],
+            "lengthInches": 0.7262
+          },
+          {
+            "sourceWindow": [
+              36.2152,
+              36.6
+            ],
+            "lengthInches": 0.3472
+          }
+        ]
+      },
+      {
+        "kind": "juniper-primary-branch",
+        "sampledPoints": 379,
+        "hiddenByFoliageFraction": 0.868,
+        "exposedRuns": [
+          {
+            "sourceWindow": [
+              37.9397,
+              38.0444
+            ],
+            "lengthInches": 0.1048
+          },
+          {
+            "sourceWindow": [
+              38.254,
+              38.2889
+            ],
+            "lengthInches": 0.035
+          },
+          {
+            "sourceWindow": [
+              39.3714,
+              39.4063
+            ],
+            "lengthInches": 0.0352
+          },
+          {
+            "sourceWindow": [
+              39.4762,
+              39.546
+            ],
+            "lengthInches": 0.0702
+          },
+          {
+            "sourceWindow": [
+              43.7016,
+              43.7714
+            ],
+            "lengthInches": 0.0699
+          },
+          {
+            "sourceWindow": [
+              43.981,
+              44.2952
+            ],
+            "lengthInches": 0.315
+          },
+          {
+            "sourceWindow": [
+              44.3651,
+              44.5397
+            ],
+            "lengthInches": 0.1752
+          },
+          {
+            "sourceWindow": [
+              44.9587,
+              45.0984
+            ],
+            "lengthInches": 0.1523
+          },
+          {
+            "sourceWindow": [
+              46.3905,
+              46.4254
+            ],
+            "lengthInches": 0.0399
+          },
+          {
+            "sourceWindow": [
+              46.5651,
+              46.6
+            ],
+            "lengthInches": 0.0403
+          }
+        ]
+      },
+      {
+        "kind": "oak-primary-branch",
+        "sampledPoints": 327,
+        "hiddenByFoliageFraction": 0.859,
+        "exposedRuns": [
+          {
+            "sourceWindow": [
+              60.4,
+              60.9236
+            ],
+            "lengthInches": 0.5253
+          },
+          {
+            "sourceWindow": [
+              60.9934,
+              61.3075
+            ],
+            "lengthInches": 0.3169
+          },
+          {
+            "sourceWindow": [
+              63.2621,
+              63.297
+            ],
+            "lengthInches": 0.0351
+          },
+          {
+            "sourceWindow": [
+              64.7979,
+              64.9026
+            ],
+            "lengthInches": 0.1052
+          },
+          {
+            "sourceWindow": [
+              67.0666,
+              67.1364
+            ],
+            "lengthInches": 0.0698
+          },
+          {
+            "sourceWindow": [
+              71.5692,
+              71.7786
+            ],
+            "lengthInches": 0.2106
+          }
+        ]
+      }
+    ],
     "engravingFootprint": {
       "minX": 1.13523,
-      "minY": 4.79989,
+      "minY": 4.7278,
       "maxX": 62.72969,
-      "maxY": 18.61945
+      "maxY": 18.66521
     }
   }
 }

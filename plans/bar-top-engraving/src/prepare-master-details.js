@@ -6,11 +6,11 @@ const proof = fs.readFileSync(path.join(root, 'measured-oak-garland-proof.svg'),
 const source = proof.slice(proof.indexOf('<svg'));
 const design = JSON.parse(fs.readFileSync(path.join(root, 'design.json'), 'utf8'));
 for (const [key, sectionKey, title, caption] of [
-  ['wine', 'wine-close', 'V5 - larger grape leaves and fewer, larger grapes', 'Fewer enlarged palmate leaves and hanging bunches fill the same vine section. All lines are actual SVG engraving paths.'],
-  ['oak', 'oak-close', 'V5 - larger white-oak leaves and angled acorns', 'Fewer, larger leaves join woody twigs and partly hide selected enlarged acorns; one fruit remains clear of foreground leaves. Hidden lines are removed from the engraving paths.'],
-  ['gin', 'gin-close', 'V5 - larger juniper needles and berries', 'Fewer needle whorls and berry clusters grow on connected woody branches. Individual needles and berries are genuinely enlarged.'],
-  ['corn', 'corn-close', 'V5 - enlarged corn ears among fewer rye heads', 'Kernel crowns, side walls and peeled husks are enlarged together. The differently angled ears and fewer, larger rye heads remain within the existing engraving band.'],
-  ['corn-kernel', 'corn-kernel-close', 'V5 - enlarged raised corn kernels', 'Larger rounded crowns, side walls and projecting edge kernels retain their modeled form. Fine texture is thinned; the cut lines remain actual SVG geometry.'],
+  ['wine', 'wine-close', 'V6 - shorter bare grape-vine stretches', 'Two attached grape leaves shorten the longest exposed vine stretches. The foliage band is 5% wider; all lines are actual SVG engraving paths.'],
+  ['oak', 'oak-close', 'V6 - white oak in a five-percent-wider band', 'Larger leaves join woody twigs and partly hide selected acorns; one fruit remains clear of foreground leaves. The motif counts are unchanged from v5.'],
+  ['gin', 'gin-close', 'V6 - simplified juniper stems and connections', 'Branches, twigs and berry stems use single centerlines without bark marks or interior grooves. The foliage band is 5% wider.'],
+  ['corn', 'corn-close', 'V6 - corn and rye in a five-percent-wider band', 'Kernel crowns, side walls and peeled husks retain their modeled form. Only normal offsets are enlarged; the route and wood dimensions are unchanged.'],
+  ['corn-kernel', 'corn-kernel-close', 'V6 - raised corn kernels in the wider band', 'Rounded crowns, side walls and projecting edge kernels retain their modeled form. Fine texture is thinned; the cut lines remain actual SVG geometry.'],
 ]) {
   const section = design.sections.find(s => s.key === sectionKey);
   assert(section, `Missing detail section: ${sectionKey}`);

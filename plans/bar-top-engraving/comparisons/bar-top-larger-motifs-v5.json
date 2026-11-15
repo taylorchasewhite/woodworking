@@ -1,0 +1,624 @@
+{
+  "title": "Layered botanical engraving - Whiskey Gin Beer Wine Oak - larger motifs v5",
+  "seed": 200731,
+  "sections": [
+    {
+      "key": "corn-close",
+      "title": "Close-up - corn with raised kernels and peeled husks",
+      "stationWindow": [
+        5.299999999999997,
+        15.5
+      ],
+      "description": "Two enlarged ears lie at different angles among fewer, larger rye heads. The kernel crowns, side faces and peeled husks are enlarged together, not merely drawn with thicker strokes.",
+      "viewBox": [
+        4.4,
+        15.7908,
+        14,
+        4.032
+      ],
+      "rotate": 0
+    },
+    {
+      "key": "gin-close",
+      "title": "Close-up - leafy juniper branch and berries",
+      "stationWindow": [
+        20.299999999999997,
+        26
+      ],
+      "description": "Whorled needle sprays and berry pedicels follow the bend, joined to their own woody juniper branch.",
+      "viewBox": [
+        19.0293,
+        9.3668,
+        4.1863,
+        9.4413
+      ],
+      "rotate": -90
+    },
+    {
+      "key": "wine-close",
+      "title": "Close-up - grapes growing on a vine",
+      "stationWindow": [
+        45.400000000000006,
+        50.800000000000004
+      ],
+      "description": "Fewer enlarged leaves and bunches fill the same vine section. Individual grapes are larger, with fewer grapes per bunch and less fine texture.",
+      "viewBox": [
+        34.4164,
+        4.2759,
+        9.2,
+        3.99
+      ],
+      "rotate": 0
+    },
+    {
+      "key": "oak-close",
+      "title": "Close-up - naturally layered oak and angled acorns",
+      "viewBox": [
+        52,
+        4.3,
+        10.4,
+        3.8
+      ],
+      "rotate": 0,
+      "description": "Larger white-oak leaves and acorns grow at varied angles from connected twigs. The ending stays in the same area, with foreground foliage still partly concealing selected fruit."
+    },
+    {
+      "key": "corn-kernel-close",
+      "title": "Detail - raised corn kernels and side faces",
+      "viewBox": [
+        5.950000000000001,
+        16.615756978652453,
+        2.3,
+        2.2
+      ],
+      "rotate": 0,
+      "description": "A tighter view of the first ear shows the rounded kernel crowns, shaded lower side walls and projecting edge kernels. The smooth inner cob is beneath the kernel layer, not the outer silhouette."
+    },
+    {
+      "key": "whiskey-gin-transition",
+      "title": "Transition - rye into juniper",
+      "stationWindow": [
+        17.3,
+        21.8
+      ],
+      "description": "Late rye heads overlap the first smaller juniper sprays as the engraving approaches the bend. The grains keep their individual culms beside the woody juniper branch.",
+      "viewBox": [
+        16.7,
+        13.8668,
+        6.1449,
+        5.4934
+      ],
+      "rotate": 0
+    },
+    {
+      "key": "gin-beer-transition",
+      "title": "Transition - juniper into hops and barley",
+      "stationWindow": [
+        27.8,
+        32.2
+      ],
+      "description": "Ending juniper sprays interleave with the first hop leaves and barley stalks. Each plant retains its own concealed support.",
+      "viewBox": [
+        19.4306,
+        4.6964,
+        5.2858,
+        6.3704
+      ],
+      "rotate": -90
+    },
+    {
+      "key": "beer-wine-transition",
+      "title": "Transition - hops and barley into grape vine",
+      "stationWindow": [
+        41.5,
+        46.5
+      ],
+      "description": "Smaller late hop leaves and a cone overlap the beginning grape vine, broad palmate leaves and first hanging bunches.",
+      "viewBox": [
+        30.8164,
+        4.6369,
+        8.2,
+        3.3975
+      ],
+      "rotate": 0
+    },
+    {
+      "key": "wine-oak-transition",
+      "title": "Transition - grape vine into white oak",
+      "stationWindow": [
+        60.2,
+        65
+      ],
+      "description": "The ending grape bunch and enlarged palmate foliage recede beneath the first oak leaves, leading into fewer, larger leaves and acorns.",
+      "viewBox": [
+        49.5164,
+        4.6049,
+        8,
+        3.4157
+      ],
+      "rotate": 0
+    },
+    {
+      "key": "whiskey",
+      "title": "Whiskey / bourbon - rye stalks and husked corn",
+      "start": 0,
+      "end": 19,
+      "sourceStart": 43.5,
+      "stationScale": 1,
+      "description": "Fewer, larger rye heads and leaves accompany two enlarged corn ears on the short arm. The ears lean at different angles to fit the existing band; raised kernels and peeled husks retain their form.",
+      "viewBox": [
+        -0.9,
+        15.7667,
+        22.7878,
+        4.056
+      ],
+      "rotate": 0
+    },
+    {
+      "key": "gin",
+      "title": "Gin - juniper berries on leafy branches",
+      "start": 19,
+      "end": 29.5,
+      "sourceStart": 34.5,
+      "stationScale": 1,
+      "description": "Whorled juniper sprays and berries follow the whiskey grains around the bend, growing from their own mostly concealed woody branch.",
+      "viewBox": [
+        18.0878,
+        5.864,
+        5.1278,
+        13.7491
+      ],
+      "rotate": -90
+    },
+    {
+      "key": "beer",
+      "title": "Beer - hops on bines and barley stalks",
+      "start": 29.5,
+      "end": 43.2,
+      "sourceStart": 19.3,
+      "stationScale": 0.9013157894736842,
+      "description": "Fewer enlarged hop leaves, cones and barley heads bridge juniper and wine on their connected bine and culms. The section retains its established route span and overlaps at both ends.",
+      "viewBox": [
+        19.2561,
+        4.2589,
+        16.7603,
+        5.405
+      ],
+      "rotate": 0
+    },
+    {
+      "key": "wine",
+      "title": "Wine - grapes and leaves on a flowing vine",
+      "start": 43.2,
+      "end": 62.5,
+      "sourceStart": 0,
+      "stationScale": 1,
+      "description": "Larger palmate leaves and larger individual grapes form fewer hanging bunches along the woody vine. The vine still fills the long-arm section and interleaves with the oak.",
+      "viewBox": [
+        32.2164,
+        4.2761,
+        23.1,
+        4.0583
+      ],
+      "rotate": 0
+    },
+    {
+      "key": "oak",
+      "title": "White oak - layered leaves and angled acorns",
+      "start": 62.5,
+      "end": 72.20862787842316,
+      "sourceStart": 62.5,
+      "stationScale": 1,
+      "description": "Fewer enlarged Quercus alba leaves and four enlarged acorns occupy the same ending. Forward and backward leaves join woody twigs; selected foreground leaves partly hide angled fruit.",
+      "viewBox": [
+        51.5164,
+        4.2682,
+        13.5086,
+        4.0524
+      ],
+      "rotate": 0
+    }
+  ],
+  "stats": {
+    "layoutVersion": "bar-top-larger-motifs-v5",
+    "motifScaleTarget": 1.4,
+    "plantOrder": [
+      "whiskey",
+      "gin",
+      "beer",
+      "wine",
+      "oak"
+    ],
+    "layeredObjects": 1486,
+    "noGenericGarlandSpine": true,
+    "botanicalStructure": {
+      "oakLeafSpecies": "Quercus alba",
+      "oakLobesPerLeaf": 7,
+      "acornPeduncles": 4,
+      "woodyGrapeVines": 1,
+      "grapeLeafPetioles": 16,
+      "hangingGrapeBunches": 5,
+      "woodyOakBranches": 1,
+      "oakLeafPetioles": 17,
+      "oakFruitTwigs": 4,
+      "foregroundOakLeaves": 3,
+      "acornAnglesDegrees": [
+        -32,
+        2,
+        27,
+        -14
+      ],
+      "juniperPrimaryBranches": 1,
+      "juniperBerryPedicels": 24,
+      "hopsBines": 1,
+      "barleyCulms": 8,
+      "ryeCulms": 11,
+      "angledCornEars": 2,
+      "cornAnglesDegrees": [
+        -72,
+        78
+      ],
+      "raisedCornKernels": 96
+    },
+    "motifMetrics": {
+      "grapeLeaves": {
+        "count": 16,
+        "medianSilhouetteAreaSquareInches": 2.024598
+      },
+      "grapes": {
+        "count": 45,
+        "medianSilhouetteAreaSquareInches": 0.142548
+      },
+      "hopLeaves": {
+        "count": 13,
+        "medianSilhouetteAreaSquareInches": 1.38765
+      },
+      "hopBracts": {
+        "count": 44,
+        "medianSilhouetteAreaSquareInches": 0.28102
+      },
+      "juniperNeedles": {
+        "count": 483,
+        "medianSilhouetteAreaSquareInches": 0.010402
+      },
+      "juniperBerries": {
+        "count": 24,
+        "medianSilhouetteAreaSquareInches": 0.109823
+      },
+      "barleyGrains": {
+        "count": 96,
+        "medianSilhouetteAreaSquareInches": 0.025152
+      },
+      "ryeGrains": {
+        "count": 176,
+        "medianSilhouetteAreaSquareInches": 0.032618
+      },
+      "cornKernels": {
+        "count": 96,
+        "medianSilhouetteAreaSquareInches": 0.026761
+      },
+      "oakLeaves": {
+        "count": 17,
+        "medianSilhouetteAreaSquareInches": 1.241103
+      },
+      "acorns": {
+        "count": 4,
+        "medianSilhouetteAreaSquareInches": 0.634216
+      }
+    },
+    "detailReduction": {
+      "baselineVersion": "bar-top-larger-motifs-v5",
+      "baselineDescription": "Same scene before fine-texture thinning",
+      "targetOverallFraction": 0.25,
+      "baselinePaths": 7988,
+      "retainedPaths": 5991,
+      "removedPaths": 1997,
+      "overallReductionFraction": 0.25,
+      "texturePathsBefore": 4103,
+      "texturePathsRemoved": 1997,
+      "textureReductionFraction": 0.48672,
+      "protectedPaths": 3885,
+      "sectionReductions": [
+        {
+          "section": "whiskey",
+          "texturePathsBefore": 1007,
+          "texturePathsRemoved": 486
+        },
+        {
+          "section": "gin",
+          "texturePathsBefore": 383,
+          "texturePathsRemoved": 190
+        },
+        {
+          "section": "beer",
+          "texturePathsBefore": 1092,
+          "texturePathsRemoved": 531
+        },
+        {
+          "section": "wine",
+          "texturePathsBefore": 576,
+          "texturePathsRemoved": 281
+        },
+        {
+          "section": "oak",
+          "texturePathsBefore": 1045,
+          "texturePathsRemoved": 509
+        }
+      ]
+    },
+    "structuralCoverage": [
+      {
+        "kind": "grape-woody-vine",
+        "sampledPoints": 583,
+        "hiddenByFoliageFraction": 0.854,
+        "exposedRuns": [
+          {
+            "sourceWindow": [
+              2.478,
+              2.6878
+            ],
+            "lengthInches": 0.2111
+          },
+          {
+            "sourceWindow": [
+              2.8277,
+              3.0375
+            ],
+            "lengthInches": 0.2106
+          },
+          {
+            "sourceWindow": [
+              6.4291,
+              7.1984
+            ],
+            "lengthInches": 0.7701
+          },
+          {
+            "sourceWindow": [
+              7.2683,
+              7.3382
+            ],
+            "lengthInches": 0.0699
+          },
+          {
+            "sourceWindow": [
+              11.5691,
+              11.8838
+            ],
+            "lengthInches": 0.3171
+          },
+          {
+            "sourceWindow": [
+              12.0236,
+              12.0586
+            ],
+            "lengthInches": 0.0352
+          },
+          {
+            "sourceWindow": [
+              15.2754,
+              16.3244
+            ],
+            "lengthInches": 1.053
+          }
+        ]
+      },
+      {
+        "kind": "hops-twining-bine",
+        "sampledPoints": 527,
+        "hiddenByFoliageFraction": 0.706,
+        "exposedRuns": [
+          {
+            "sourceWindow": [
+              18.3049,
+              18.4798
+            ],
+            "lengthInches": 0.1614
+          },
+          {
+            "sourceWindow": [
+              18.5498,
+              18.6198
+            ],
+            "lengthInches": 0.0648
+          },
+          {
+            "sourceWindow": [
+              22.6076,
+              24.2867
+            ],
+            "lengthInches": 1.5185
+          },
+          {
+            "sourceWindow": [
+              24.7414,
+              25.1962
+            ],
+            "lengthInches": 0.415
+          },
+          {
+            "sourceWindow": [
+              27.5399,
+              27.7498
+            ],
+            "lengthInches": 0.1908
+          },
+          {
+            "sourceWindow": [
+              29.5688,
+              30.1635
+            ],
+            "lengthInches": 0.5361
+          },
+          {
+            "sourceWindow": [
+              31.9125,
+              32.0875
+            ],
+            "lengthInches": 0.158
+          },
+          {
+            "sourceWindow": [
+              33.6266,
+              33.6966
+            ],
+            "lengthInches": 0.0634
+          },
+          {
+            "sourceWindow": [
+              33.7665,
+              33.9065
+            ],
+            "lengthInches": 0.1265
+          },
+          {
+            "sourceWindow": [
+              34.0814,
+              34.8859
+            ],
+            "lengthInches": 0.7263
+          },
+          {
+            "sourceWindow": [
+              36.2152,
+              36.6
+            ],
+            "lengthInches": 0.3471
+          }
+        ]
+      },
+      {
+        "kind": "juniper-primary-branch",
+        "sampledPoints": 379,
+        "hiddenByFoliageFraction": 0.868,
+        "exposedRuns": [
+          {
+            "sourceWindow": [
+              37.9397,
+              38.0444
+            ],
+            "lengthInches": 0.1048
+          },
+          {
+            "sourceWindow": [
+              38.254,
+              38.2889
+            ],
+            "lengthInches": 0.035
+          },
+          {
+            "sourceWindow": [
+              39.3714,
+              39.4063
+            ],
+            "lengthInches": 0.0352
+          },
+          {
+            "sourceWindow": [
+              39.4762,
+              39.546
+            ],
+            "lengthInches": 0.0702
+          },
+          {
+            "sourceWindow": [
+              43.7016,
+              43.7714
+            ],
+            "lengthInches": 0.0699
+          },
+          {
+            "sourceWindow": [
+              43.981,
+              44.2952
+            ],
+            "lengthInches": 0.315
+          },
+          {
+            "sourceWindow": [
+              44.3651,
+              44.5397
+            ],
+            "lengthInches": 0.1752
+          },
+          {
+            "sourceWindow": [
+              44.9587,
+              45.0984
+            ],
+            "lengthInches": 0.1518
+          },
+          {
+            "sourceWindow": [
+              46.3905,
+              46.4254
+            ],
+            "lengthInches": 0.0396
+          },
+          {
+            "sourceWindow": [
+              46.5651,
+              46.6
+            ],
+            "lengthInches": 0.04
+          }
+        ]
+      },
+      {
+        "kind": "oak-primary-branch",
+        "sampledPoints": 327,
+        "hiddenByFoliageFraction": 0.859,
+        "exposedRuns": [
+          {
+            "sourceWindow": [
+              60.4,
+              60.9236
+            ],
+            "lengthInches": 0.525
+          },
+          {
+            "sourceWindow": [
+              60.9934,
+              61.3075
+            ],
+            "lengthInches": 0.3167
+          },
+          {
+            "sourceWindow": [
+              63.2621,
+              63.297
+            ],
+            "lengthInches": 0.0351
+          },
+          {
+            "sourceWindow": [
+              64.7979,
+              64.9026
+            ],
+            "lengthInches": 0.1051
+          },
+          {
+            "sourceWindow": [
+              67.0666,
+              67.1364
+            ],
+            "lengthInches": 0.0698
+          },
+          {
+            "sourceWindow": [
+              71.5692,
+              71.7786
+            ],
+            "lengthInches": 0.2105
+          }
+        ]
+      }
+    ],
+    "engravingFootprint": {
+      "minX": 1.13523,
+      "minY": 4.79989,
+      "maxX": 62.72969,
+      "maxY": 18.61945
+    }
+  }
+}
