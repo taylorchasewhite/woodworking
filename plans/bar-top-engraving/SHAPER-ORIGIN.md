@@ -14,34 +14,47 @@ is **gray stroke = on-line engraving** and **blue stroke = non-cutting guide**.
 Both open and closed paths can be on-line cuts. SVG stroke width does not control
 the width of the routed groove.
 
-## Current arrangement: version 3
+## Current arrangement: version 4, reduced-detail review
 
 Starting at the free end of the short arm, the sequence is now
 **Whiskey / rye and corn > Gin / juniper > Beer / hops and barley >
 Wine / grapes > White oak / acorns**.
 
-The existing detailed motifs and all 2,026 oak paths are retained. The whiskey
-plants now occupy the short arm; juniper follows the bend, then beer and wine
-lead into the unchanged oak ending. The beer grouping is fitted about 10 percent
-lengthwise without reducing the foliage band height. One introductory rye head
-was moved inward so its attached culm remains on the wood. Transitions and
-hidden-line removal were regenerated for the new neighbors.
+Following a physical test, the user reported a groove about 1.5 to 2 times wider
+than the illustrated lines and chose **25 percent fewer cuts overall**.
+Version 4 removes **3,118 of 12,472 paths**, leaving **9,354**. Those removals
+are about half of the 6,205 fine texture paths; all **6,267 structural paths**
+remain at their exact v3 coordinates. Outlines, juniper needles, main veins,
+corn-kernel side faces, plant count, layering, transitions and placement are
+unchanged. Whole texture strokes are thinned evenly in drawing order; all
+visible fragments of a clipped stroke are removed or retained together.
 
-The reordered version contains 12,472 visible paths, approximately 2,346 inches
-(196 feet) of total engraving lines. Changes in visible path count reflect new
-overlaps and clipping rather than a loss of botanical detail.
+The whiskey plants still occupy the short arm; juniper follows the bend, then
+beer and wine lead into the oak ending. Oak texture is lighter, but its shapes
+and overlaps are unchanged. The existing beer grouping remains fitted about
+10 percent lengthwise without reducing foliage height.
+
+The reduced version has approximately **1,952 inches (163 feet)** of engraving
+lines, versus about 2,346 inches in v3. The 25 percent reduction refers to cut
+path count, not total line length or a guaranteed amount of cutting time.
 This is an ambitious hand-guided tracing job, not one automatically executed
 continuous toolpath. Disconnected shading marks add substantial selection,
 plunge/retract and travel work. Splitting files does not reduce that workload.
 
-The v2 release remains the old wine-first arrangement. Use files from **one
-version only**; mixing v2 and v3 batches will put the plants in different places.
+Compare gallery tabs **5. Layered v3 (before)** and **6. Reduced detail v4**.
+They retain the same illustrative line weights and share the selected zoom.
+The saved v3 proof is for visual comparison only, not a cutting import.
+
+The v2 release remains the old wine-first arrangement; v3 is the denser
+whiskey-first arrangement. Use files from **one version only**. Never combine
+v3 and v4 cuts, which would duplicate retained paths, or mix their shading
+batches expecting the reduced appearance.
 
 ## Which files to transfer
 
 The [v3 release](https://github.com/taylorchasewhite/woodworking/releases/tag/bar-top-order-v3)
-provides a transfer ZIP containing only the current cutting SVGs, batch manifest
-and these instructions. Extract it before transferring files.
+contains the **older, denser** transfer ZIP, not the current v4 review. Use the
+matching v4 files below when testing this simplification.
 
 - **Complete design with placement references:**
   [master-botanicals-with-guides.svg](master-botanicals/master-botanicals-with-guides.svg).
@@ -116,7 +129,7 @@ bounding rectangle, not necessarily an accessible physical corner of the wood.
 
 See [workspace setup recommendations](https://support.shapertools.com/hc/en-us/articles/115002790173-Dos-Don-ts-of-Workspace-Setups).
 
-The v3 geometry test sampled 328,876 points along the actual exported curves;
+The v4 geometry test sampled 274,681 points along the actual exported curves;
 none were outside the measured wood, with about **1.04 inches minimum centerline
 edge clearance**. A separate coordinate-based test confirms the plant order and
 the presence of both neighboring plant families at each new transition.
@@ -124,7 +137,7 @@ This does not certify real placement, cutter footprint or finished-top accuracy.
 
 ## Complexity and working batches
 
-The complete cut export is approximately 7.4 MB before any external compression.
+The complete cut export remains a multi-megabyte SVG before external compression.
 I could not verify a current official maximum SVG byte size or hard path/node
 limit; do not treat that size as certified compatible. Test import and selection
 responsiveness on your actual Origin before starting the bar top.
@@ -203,8 +216,12 @@ Before the bar:
 5. Check the intended finish on a sample too; sanding/finish can diminish very
    shallow details. Record the chosen bit, depths and results in a new commit.
 
-This repository has not been physically imported, registered or cut on an Origin.
-The full engraving remains **uncalibrated for fabrication** until that scrap test.
+The user has performed an initial physical test of v3; v4 responds to its
+wider-groove feedback but has not yet been physically tested. The actual groove
+width in inches, bit and depth remain unspecified. This simplification is **not
+a cutter-clearance guarantee**: intersections and converging lines remain, and
+there is no new minimum-spacing claim. Repeat the actual-size scrap test before
+committing to the bar top.
 
 ## Version history
 
@@ -213,6 +230,8 @@ The full engraving remains **uncalibrated for fabrication** until that scrap tes
   portable sources, validation and exact-geometry working batches.
 - `bar-top-order-v3`: Whiskey > Gin > Beer > Wine > Oak, with the original oak
   geometry, refreshed transitions/crops and regenerated Origin batches.
+- `bar-top-detail-v4`: review revision with 25 percent fewer paths, removed only
+  from fine texture, and an unchanged v3 proof for before/after comparison.
 
 Future shape, spacing, depth or workload changes should be committed with their
 matching exports and measurements. Keep the current version recoverable.

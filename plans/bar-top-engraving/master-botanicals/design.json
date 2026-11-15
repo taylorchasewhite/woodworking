@@ -1,5 +1,5 @@
 {
-  "title": "Layered botanical engraving - Whiskey Gin Beer Wine Oak - v3",
+  "title": "Layered botanical engraving - Whiskey Gin Beer Wine Oak - reduced detail v4",
   "seed": 200731,
   "sections": [
     {
@@ -220,7 +220,7 @@
     }
   ],
   "stats": {
-    "layoutVersion": "bar-top-order-v3",
+    "layoutVersion": "bar-top-detail-v4",
     "plantOrder": [
       "whiskey",
       "gin",
@@ -230,7 +230,7 @@
     ],
     "layeredObjects": 2455,
     "noGenericGarlandSpine": true,
-    "hatchSpacingTypicalInches": [
+    "sourceHatchSpacingTypicalInches": [
       0.027,
       0.06
     ],
@@ -263,6 +263,45 @@
         26
       ],
       "raisedCornKernels": 96
+    },
+    "detailReduction": {
+      "baselineVersion": "bar-top-order-v3",
+      "targetOverallFraction": 0.25,
+      "baselinePaths": 12472,
+      "retainedPaths": 9354,
+      "removedPaths": 3118,
+      "overallReductionFraction": 0.25,
+      "texturePathsBefore": 6205,
+      "texturePathsRemoved": 3118,
+      "textureReductionFraction": 0.5025,
+      "protectedPaths": 6267,
+      "sectionReductions": [
+        {
+          "section": "whiskey",
+          "texturePathsBefore": 1341,
+          "texturePathsRemoved": 676
+        },
+        {
+          "section": "gin",
+          "texturePathsBefore": 549,
+          "texturePathsRemoved": 274
+        },
+        {
+          "section": "beer",
+          "texturePathsBefore": 1457,
+          "texturePathsRemoved": 732
+        },
+        {
+          "section": "wine",
+          "texturePathsBefore": 1290,
+          "texturePathsRemoved": 648
+        },
+        {
+          "section": "oak",
+          "texturePathsBefore": 1568,
+          "texturePathsRemoved": 788
+        }
+      ]
     }
   }
 }

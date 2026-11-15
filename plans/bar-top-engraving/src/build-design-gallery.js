@@ -42,11 +42,17 @@ const designs = [
     sections: tavern.sections,
   },
   {
-    id: 'master', title: 'Layered botanical frieze - reordered v3', tab: '5. Layered engraving', type: 'svg',
+    id: 'master-v3', title: 'Layered botanical frieze - v3 before simplification', tab: '5. Layered v3 (before)', type: 'svg',
+    proof: 'comparisons/bar-top-order-v3-proof.svg',
+    description: 'The exact v3 proof from before the wider-bit test, retained for visual comparison. This tab has no cutting downloads; the complete original files remain in the bar-top-order-v3 Git tag and release. Switch between tabs 5 and 6 to compare the same enlarged section at the same illustrative line weight.',
+    sections: master.sections,
+  },
+  {
+    id: 'master', title: 'Layered botanical frieze - reduced detail v4', tab: '6. Reduced detail v4', type: 'svg',
     proof: 'master-botanicals/measured-oak-garland-proof.svg',
     paths: 'master-botanicals/master-botanicals-paths.svg',
     guides: 'master-botanicals/master-botanicals-with-guides.svg',
-    description: 'New order, starting at the short-arm end: whiskey / rye and corn, then gin / juniper, beer / hops and barley, wine / grape vine, and white oak / acorns. The existing detailed motifs, layered oak ending and measured board layout are retained. The beer grouping is fitted about 10% along the route, with no change in band height. Plants interleave at all four new handoffs. The previous layered arrangement remains in the bar-top-origin-encoding-v2 Git tag; designs 1-4 are unchanged.',
+    description: `Wider-bit revision: ${master.stats.detailReduction.removedPaths.toLocaleString('en-US')} of ${master.stats.detailReduction.baselinePaths.toLocaleString('en-US')} engraving paths removed (about 25% overall), entirely from fine texture. Outlines, juniper needles, main veins, raised kernel side faces, measured placement and the whiskey / gin / beer / wine / oak order are unchanged. Approximately half the fine hatch cuts remain, giving the wider groove more breathing room. Compare tab 5 before and tab 6 after; the preview weights are the same, not a calibrated prediction of your groove width. Designs 1-4 are unchanged.`,
     sections: master.sections,
   },
 ];
@@ -88,7 +94,7 @@ footer{border-top:1px solid #d3dacd;margin-top:24px;padding-top:17px;font-size:1
 @media(max-width:850px){body{padding:8px}#sheet{padding:19px}h1{font-size:27px}.caption{display:block}.actions{margin-top:13px}#detail-svg{height:250px}.tabs button{font-size:13px;padding:8px}.zoom-tools select{max-width:100%}}
 </style></head><body><main id="sheet">
 <h1>Bar-top engraving design notebook</h1>
-<p class="intro">Switch designs instantly, then inspect a section below. Earlier designs are preserved; future revisions can update their linked SVGs here.</p>
+<p class="intro">Switch designs instantly, then inspect a section below. Compare tabs 5 and 6 for the wider-bit simplification; both use the same illustrative line weights.</p>
 <div class="tabs" role="tablist" aria-label="Engraving designs">
 ${designs.map(d => `<button id="tab-${d.id}" type="button" role="tab" aria-selected="${d.id === 'master'}" aria-controls="design-panel" tabindex="${d.id === 'master' ? 0 : -1}" data-design="${d.id}">${d.tab}</button>`).join('')}
 </div>
@@ -114,7 +120,7 @@ ${designs.map(d => `<button id="tab-${d.id}" type="button" role="tab" aria-selec
 <tr><td>1 - anatomy</td><td>Grape leaves need a basal sinus and major veins radiating from the petiole; the earlier pointed, elongated shapes were not convincing.</td><td>Rebuilt as broader serrated, palmate leaves. Most leaves remain unfolded as recognition anchors.</td></tr>
 <tr><td>2 - anatomy</td><td>White-oak lobes were too angular, and acorn cups looked too deep.</td><td>Replaced with seven rounded fingerlike lobes and deep sinuses; flattened the scaly cups and added short peduncles.</td></tr>
 <tr><td>3 - growth clarity</td><td>Fruit and foliage overlapped without enough readable attachment routes.</td><td>Grapes, oak, juniper and hops now have connected, largely concealed support stems appropriate to each plant. Barley and rye have individual culms; acorn stalks and woody fruit twigs are connected.</td></tr>
-<tr><td>4 - line hierarchy</td><td>Dense hatch knots and repeated curled edges competed for attention.</td><td>Reduced wine hatching and limited folds to selected leaves. Further simplification elsewhere remains a discussion, followed by actual-size and scrap tests.</td></tr>
+<tr><td>4 - line hierarchy</td><td>Dense hatch knots and repeated curled edges competed for attention.</td><td>Reduced wine hatching and limited folds to selected leaves. After the user's wider-bit scrap test, v4 removes about 25% of all cuts by thinning fine texture while preserving plant contours and primary veins. This revision was not reviewed by the earlier independent reviewer.</td></tr>
 <tr><td>5 - subjective rhythm</td><td>The wine and oak sections were denser than the long arm; similarly upright corn motifs repeated conspicuously.</td><td>Added small rye fans around the retained grain-head placements. Corn now has two different angles, raised kernel crowns, shaded side faces and partially peeled husks. Oak fruit angles and foreground leaf overlap are deliberately varied.</td></tr>
 <tr><td>6 - subjective transitions</td><td>Some changes between plant sections read abruptly rather than as gentle handoffs.</td><td>Version 3 reorders the detailed plant groups: whiskey to gin, gin to beer, beer to wine, and wine to oak. Four updated transition zooms show the interleaving at these new handoffs. Each plant keeps its own support; the earlier review did not inspect this rearrangement.</td></tr>
 </tbody></table></div>
@@ -160,6 +166,8 @@ function zoom(key) {
 function render(id) {
   const design = byId.get(id);
   if (!design) { report('Unknown design bookmark: ' + id); return; }
+  const comparisonSection = selected && selected.id.startsWith('master') && id.startsWith('master')
+    ? sectionSelect.value : undefined;
   selected = design;
   error.hidden = true;
   for (const tab of document.querySelectorAll('[data-design]')) {
@@ -180,11 +188,14 @@ function render(id) {
     const option = document.createElement('option'); option.value = section.key; option.textContent = section.title; sectionSelect.append(option);
   }
   if (design.type === 'svg') {
-    document.getElementById('proof-link').href = design.proof;
-    document.getElementById('path-link').href = design.paths;
-    document.getElementById('guide-link').href = design.guides;
+    for (const [linkId, asset] of [['proof-link', design.proof], ['path-link', design.paths], ['guide-link', design.guides]]) {
+      const link = document.getElementById(linkId);
+      link.hidden = !asset;
+      if (asset) link.href = asset;
+      else link.removeAttribute('href');
+    }
     document.getElementById('detail-image').setAttribute('href', design.proof);
-    zoom(selectedSections.get(id) || design.sections[0].key);
+    zoom(comparisonSection || selectedSections.get(id) || design.sections[0].key);
   }
 }
 function choose(id, focus=false) {

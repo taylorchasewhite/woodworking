@@ -5,8 +5,8 @@
   },
   "widthInches": 64.125,
   "heightInches": 20,
-  "totalPaths": 12472,
-  "layoutVersion": "bar-top-order-v3",
+  "totalPaths": 9354,
+  "layoutVersion": "bar-top-detail-v4",
   "plantOrder": [
     "whiskey",
     "gin",
@@ -14,6 +14,45 @@
     "wine",
     "oak"
   ],
+  "detailReduction": {
+    "baselineVersion": "bar-top-order-v3",
+    "targetOverallFraction": 0.25,
+    "baselinePaths": 12472,
+    "retainedPaths": 9354,
+    "removedPaths": 3118,
+    "overallReductionFraction": 0.25,
+    "texturePathsBefore": 6205,
+    "texturePathsRemoved": 3118,
+    "textureReductionFraction": 0.5025,
+    "protectedPaths": 6267,
+    "sectionReductions": [
+      {
+        "section": "whiskey",
+        "texturePathsBefore": 1341,
+        "texturePathsRemoved": 676
+      },
+      {
+        "section": "gin",
+        "texturePathsBefore": 549,
+        "texturePathsRemoved": 274
+      },
+      {
+        "section": "beer",
+        "texturePathsBefore": 1457,
+        "texturePathsRemoved": 732
+      },
+      {
+        "section": "wine",
+        "texturePathsBefore": 1290,
+        "texturePathsRemoved": 648
+      },
+      {
+        "section": "oak",
+        "texturePathsBefore": 1568,
+        "texturePathsRemoved": 788
+      }
+    ]
+  },
   "placement": "All files use the same full-board guides and coordinates. Never scale individual batches.",
   "batches": [
     {
@@ -21,70 +60,70 @@
       "pass": "linework",
       "filename": "whiskey-linework.svg",
       "pathCount": 1315,
-      "bytes": 1116573
+      "bytes": 1116588
     },
     {
       "section": "whiskey",
       "pass": "shading",
       "filename": "whiskey-shading.svg",
-      "pathCount": 1341,
-      "bytes": 630301
+      "pathCount": 665,
+      "bytes": 321039
     },
     {
       "section": "gin",
       "pass": "linework",
       "filename": "gin-linework.svg",
       "pathCount": 714,
-      "bytes": 318624
+      "bytes": 318639
     },
     {
       "section": "gin",
       "pass": "shading",
       "filename": "gin-shading.svg",
-      "pathCount": 2699,
-      "bytes": 1299925
+      "pathCount": 2425,
+      "bytes": 1209132
     },
     {
       "section": "beer",
       "pass": "linework",
       "filename": "beer-linework.svg",
       "pathCount": 1163,
-      "bytes": 965584
+      "bytes": 965599
     },
     {
       "section": "beer",
       "pass": "shading",
       "filename": "beer-shading.svg",
-      "pathCount": 1457,
-      "bytes": 720861
+      "pathCount": 725,
+      "bytes": 360654
     },
     {
       "section": "wine",
       "pass": "linework",
       "filename": "wine-linework.svg",
       "pathCount": 467,
-      "bytes": 606381
+      "bytes": 606396
     },
     {
       "section": "wine",
       "pass": "shading",
       "filename": "wine-shading.svg",
-      "pathCount": 1290,
-      "bytes": 404181
+      "pathCount": 642,
+      "bytes": 202720
     },
     {
       "section": "oak",
       "pass": "linework",
       "filename": "oak-linework.svg",
       "pathCount": 458,
-      "bytes": 502475
+      "bytes": 502490
     },
     {
       "section": "oak",
       "pass": "shading",
       "filename": "oak-shading.svg",
-      "pathCount": 1568,
-      "bytes": 810265
+      "pathCount": 780,
+      "bytes": 413304
     }
   ]
 }

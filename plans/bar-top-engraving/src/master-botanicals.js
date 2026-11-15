@@ -680,9 +680,9 @@ module.exports = function drawMaster(api) {
   return {
     seed, sections, foregroundIds, metadata, masksFor, keepInsideFor, structuralSupports, oakAcorns,
     stats: {
-      layoutVersion: 'bar-top-order-v3',
+      layoutVersion: 'bar-top-detail-v4',
       plantOrder: ['whiskey', 'gin', 'beer', 'wine', 'oak'],
-      layeredObjects: shapes.length, noGenericGarlandSpine: true, hatchSpacingTypicalInches: [0.027, 0.060],
+      layeredObjects: shapes.length, noGenericGarlandSpine: true, sourceHatchSpacingTypicalInches: [0.027, 0.060],
       botanicalStructure: {
         oakLeafSpecies: 'Quercus alba', oakLobesPerLeaf: 7,
         acornPeduncles: shapes.filter(s => s.id.startsWith('oak-acorn-peduncle-')).length,

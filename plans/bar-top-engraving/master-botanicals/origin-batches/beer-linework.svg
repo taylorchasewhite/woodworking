@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="64.125in" height="20in" viewBox="0 0 64.125 20">
-<title>Layered botanical engraving - Whiskey Gin Beer Wine Oak - v3 - beer linework</title>
+<title>Layered botanical engraving - Whiskey Gin Beer Wine Oak - reduced detail v4 - beer linework</title>
 <desc>Gray: on-line cuts. Blue: non-cutting board and miter guides. Exact unchanged paths from the complete design, not a rescaled crop. Align the full board guide identically for every batch in the same scanned workspace. Some connected branches span botanical boundaries. Do not cut the registration guides. Bit and depth remain unset; test on scrap.</desc>
 <path id="board-registration-guide" d="M14.875 0 H64.125 V8.5 H23.375 V20 H0 V11.5 H14.875 Z" fill="none" stroke="#0000ff" stroke-width="0.01"/>
 <path id="miter-registration-guides" d="M14.875 0 L23.375 8.5 M14.875 11.5 L23.375 20" fill="none" stroke="#0000ff" stroke-width="0.01"/>

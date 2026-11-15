@@ -45,7 +45,7 @@ test('ten batches partition the complete design exactly without scaling or dupli
   const directory = 'master-botanicals';
   const manifest = JSON.parse(read(path.join(directory, 'origin-batches', 'manifest.json')));
   assert.deepEqual(manifest.encoding, { onLine: '#808080', guide: '#0000ff' });
-  assert.equal(manifest.layoutVersion, 'bar-top-order-v3');
+  assert.equal(manifest.layoutVersion, 'bar-top-detail-v4');
   assert.deepEqual(manifest.plantOrder, ['whiskey', 'gin', 'beer', 'wine', 'oak']);
   assert.equal(manifest.batches.length, 10);
   const full = paths(read(path.join(directory, 'master-botanicals-paths.svg')));
@@ -69,6 +69,52 @@ test('ten batches partition the complete design exactly without scaling or dupli
   assert.equal(new Set(combined.map(item => item.id)).size, full.length);
   const sort = items => [...items].sort((a, b) => a.id.localeCompare(b.id));
   assert.deepEqual(sort(combined), sort(full));
+});
+
+test('v4 removes a quarter of actual cuts only from fine texture and preserves v3 structural geometry', t => {
+  const original = paths(read(path.join('comparisons', 'bar-top-order-v3-proof.svg')))
+    .filter(item => item.stroke === '#553822')
+    .map(item => ({ ...item, id: item.id.replace(/^plan-/, '') }));
+  assert.equal(original.length, 12472);
+  const current = paths(read(path.join('master-botanicals', 'master-botanicals-paths.svg')));
+  const originalById = new Map(original.map(item => [item.id, item]));
+  const currentById = new Map(current.map(item => [item.id, item]));
+  const isTexture = item => item['stroke-width'] === '0.0075' && !/-silhouette(?:-visible-\d+)?$/.test(item.id);
+  const texture = original.filter(isTexture);
+  const removed = original.filter(item => !currentById.has(item.id));
+  assert(Math.abs(removed.length / original.length - 0.25) < 0.001, 'Must remove about 25% of all actual cut paths');
+  assert(removed.every(isTexture), 'Only fine texture may be removed');
+  for (const item of current) {
+    assert.equal(item.d, originalById.get(item.id)?.d, `Moved or invented a v3 path: ${item.id}`);
+  }
+  for (const item of original.filter(item => !isTexture(item))) {
+    assert(currentById.has(item.id), `Lost structural path: ${item.id}`);
+  }
+  const sourceGroups = new Map();
+  for (const item of texture) {
+    const source = item.id.replace(/-visible-\d+$/, '');
+    if (!sourceGroups.has(source)) sourceGroups.set(source, []);
+    sourceGroups.get(source).push(item.id);
+  }
+  for (const ids of sourceGroups.values()) {
+    const retained = ids.filter(id => currentById.has(id)).length;
+    assert(retained === 0 || retained === ids.length, 'A clipped texture stroke was only partly removed');
+  }
+  const stats = JSON.parse(read(path.join('master-botanicals', 'design.json'))).stats;
+  const reduction = stats.detailReduction;
+  assert.equal(stats.layoutVersion, 'bar-top-detail-v4');
+  assert.equal(reduction.baselinePaths, original.length);
+  assert.equal(reduction.retainedPaths, current.length);
+  assert.equal(reduction.removedPaths, removed.length);
+  assert.equal(reduction.texturePathsBefore, texture.length);
+  assert.equal(reduction.protectedPaths, original.length - texture.length);
+  for (const section of reduction.sectionReductions) {
+    const fraction = section.texturePathsRemoved / section.texturePathsBefore;
+    assert(fraction > 0.48 && fraction < 0.53, `Uneven texture thinning in ${section.section}`);
+  }
+  const manifest = JSON.parse(read(path.join('master-botanicals', 'origin-batches', 'manifest.json')));
+  assert.deepEqual(manifest.detailReduction, reduction);
+  t.diagnostic(`${removed.length}/${original.length} total cuts removed; ${original.length - texture.length} structural paths unchanged`);
 });
 
 test('all metadata-defined gallery regions retain their measured coordinate system', () => {
