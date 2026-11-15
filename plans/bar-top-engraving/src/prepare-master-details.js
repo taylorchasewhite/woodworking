@@ -14,11 +14,14 @@ for (const [key, sectionKey, title, caption] of [
 ]) {
   const section = design.sections.find(s => s.key === sectionKey);
   assert(section, `Missing detail section: ${sectionKey}`);
-  const coordinates = section.viewBox;
+  const [x, y, w, h] = section.viewBox, cx = x + w / 2, cy = y + h / 2;
+  const coordinates = section.rotate ? [cx - h / 2, cy - w / 2, h, w] : [x, y, w, h];
   const box = coordinates.join(' ');
   const height = 1800 * coordinates[3] / coordinates[2];
-  const svg = source.replace('width="74.125in" height="31in" viewBox="-5 -5 74.125 31"',
+  const sized = source.replace('width="74.125in" height="31in" viewBox="-5 -5 74.125 31"',
     `width="1800" height="${height}" viewBox="${box}"`);
+  const svg = section.rotate ? sized.replace(/(<svg\b[^>]*>)([\s\S]*)(<\/svg>)/,
+    `$1<g transform="rotate(${section.rotate} ${cx} ${cy})">$2</g>$3`) : sized;
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${title}</title>
 <style>*{box-sizing:border-box}body{padding:28px;margin:0;background:#faf8f3;color:#423424;font-family:Arial,sans-serif}h1{font:32px Georgia,serif;margin:0 0 12px}p{font-size:14px;color:#73634e;margin:0 0 22px}svg{display:block;width:100%;height:auto;border:1px solid #ceb68f;border-radius:6px}</style></head>
 <body><h1>${title}</h1><p>${caption}</p>${svg}</body></html>`;

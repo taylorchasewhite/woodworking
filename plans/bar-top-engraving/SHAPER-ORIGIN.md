@@ -14,13 +14,34 @@ is **gray stroke = on-line engraving** and **blue stroke = non-cutting guide**.
 Both open and closed paths can be on-line cuts. SVG stroke width does not control
 the width of the routed groove.
 
-The art geometry has not changed for this compatibility revision. It remains
-12,174 paths, approximately 2,336 inches (195 feet) of total engraving lines.
+## Current arrangement: version 3
+
+Starting at the free end of the short arm, the sequence is now
+**Whiskey / rye and corn > Gin / juniper > Beer / hops and barley >
+Wine / grapes > White oak / acorns**.
+
+The existing detailed motifs and all 2,026 oak paths are retained. The whiskey
+plants now occupy the short arm; juniper follows the bend, then beer and wine
+lead into the unchanged oak ending. The beer grouping is fitted about 10 percent
+lengthwise without reducing the foliage band height. One introductory rye head
+was moved inward so its attached culm remains on the wood. Transitions and
+hidden-line removal were regenerated for the new neighbors.
+
+The reordered version contains 12,472 visible paths, approximately 2,346 inches
+(196 feet) of total engraving lines. Changes in visible path count reflect new
+overlaps and clipping rather than a loss of botanical detail.
 This is an ambitious hand-guided tracing job, not one automatically executed
 continuous toolpath. Disconnected shading marks add substantial selection,
 plunge/retract and travel work. Splitting files does not reduce that workload.
 
+The v2 release remains the old wine-first arrangement. Use files from **one
+version only**; mixing v2 and v3 batches will put the plants in different places.
+
 ## Which files to transfer
+
+The [v3 release](https://github.com/taylorchasewhite/woodworking/releases/tag/bar-top-order-v3)
+provides a transfer ZIP containing only the current cutting SVGs, batch manifest
+and these instructions. Extract it before transferring files.
 
 - **Complete design with placement references:**
   [master-botanicals-with-guides.svg](master-botanicals/master-botanicals-with-guides.svg).
@@ -95,8 +116,10 @@ bounding rectangle, not necessarily an accessible physical corner of the wood.
 
 See [workspace setup recommendations](https://support.shapertools.com/hc/en-us/articles/115002790173-Dos-Don-ts-of-Workspace-Setups).
 
-The last browser geometry check sampled 111,680 SVG path points; none were outside
-the measured wood, with about **1.03 inches minimum centerline edge clearance**.
+The v3 geometry test sampled 328,876 points along the actual exported curves;
+none were outside the measured wood, with about **1.04 inches minimum centerline
+edge clearance**. A separate coordinate-based test confirms the plant order and
+the presence of both neighboring plant families at each new transition.
 This does not certify real placement, cutter footprint or finished-top accuracy.
 
 ## Complexity and working batches
@@ -110,15 +133,16 @@ Each botanical region has a `linework` file (outlines/veins) and a `shading` fil
 (hatching/fine needles). These are partitions of the **exact same paths**, not
 simplified or rescaled artwork. Some support-branch fragments span section
 boundaries; batches are workflow groupings, not hard botanical boundaries.
+Each batch is assigned by its botanical family, even where foliage interleaves.
 
-- [Wine linework](master-botanicals/origin-batches/wine-linework.svg) /
-  [wine shading](master-botanicals/origin-batches/wine-shading.svg)
-- [Beer linework](master-botanicals/origin-batches/beer-linework.svg) /
-  [beer shading](master-botanicals/origin-batches/beer-shading.svg)
-- [Gin linework](master-botanicals/origin-batches/gin-linework.svg) /
-  [gin shading](master-botanicals/origin-batches/gin-shading.svg)
 - [Whiskey linework](master-botanicals/origin-batches/whiskey-linework.svg) /
   [whiskey shading](master-botanicals/origin-batches/whiskey-shading.svg)
+- [Gin linework](master-botanicals/origin-batches/gin-linework.svg) /
+  [gin shading](master-botanicals/origin-batches/gin-shading.svg)
+- [Beer linework](master-botanicals/origin-batches/beer-linework.svg) /
+  [beer shading](master-botanicals/origin-batches/beer-shading.svg)
+- [Wine linework](master-botanicals/origin-batches/wine-linework.svg) /
+  [wine shading](master-botanicals/origin-batches/wine-shading.svg)
 - [Oak linework](master-botanicals/origin-batches/oak-linework.svg) /
   [oak shading](master-botanicals/origin-batches/oak-shading.svg)
 
@@ -187,6 +211,8 @@ The full engraving remains **uncalibrated for fabrication** until that scrap tes
 - `bar-top-art-baseline-v1`: original visual design and exports, **wrong cut colors**.
 - `bar-top-origin-encoding-v2`: corrected colors, unchanged art geometry,
   portable sources, validation and exact-geometry working batches.
+- `bar-top-order-v3`: Whiskey > Gin > Beer > Wine > Oak, with the original oak
+  geometry, refreshed transitions/crops and regenerated Origin batches.
 
 Future shape, spacing, depth or workload changes should be committed with their
 matching exports and measurements. Keep the current version recoverable.

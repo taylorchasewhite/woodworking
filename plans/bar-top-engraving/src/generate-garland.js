@@ -6,7 +6,7 @@ const isMaster = process.argv.includes('--master');
 const isTavern = isMaster || process.argv.includes('--tavern');
 const baseOutput = path.resolve(__dirname, '..');
 const output = path.join(baseOutput, isMaster ? 'master-botanicals' : isTavern ? 'tavern-botanicals' : 'revision-2');
-const designTitle = isMaster ? 'Layered botanical engraving - US / UK' : isTavern ? 'US / UK tavern botanicals' : 'Detailed holiday garland - revision 2';
+const designTitle = isMaster ? 'Layered botanical engraving - Whiskey Gin Beer Wine Oak - v3' : isTavern ? 'US / UK tavern botanicals' : 'Detailed holiday garland - revision 2';
 const pathFilename = isMaster ? 'master-botanicals-paths.svg' : isTavern ? 'tavern-botanicals-paths.svg' : 'holiday-garland-paths.svg';
 const guideFilename = isMaster ? 'master-botanicals-with-guides.svg' : isTavern ? 'tavern-botanicals-with-guides.svg' : 'holiday-garland-with-guides.svg';
 const dimensions = { short: 23.375, bend: 20, long: 49.25, width: 8.5 };
@@ -540,7 +540,7 @@ ${dimension(66.5, 0, 66.5, W, '8 1/2 in', true)}
 <text class="note" x="32.5" y="15.3">All three boards: 8 1/2 in wide</text>
 <text class="note" x="32.5" y="16.5">Both miter joints: 45 degrees</text>
 <text class="note" x="32.5" y="17.7">Overall extent: 64 1/8 x 20 in (derived)</text>
-<text class="note" x="32.5" y="19">${isTavern ? 'Wine / beer / gin / rye whiskey + bourbon / oak' : 'White pine, pine cones, holly leaves + berries,'}</text>
+<text class="note" x="32.5" y="19">${isMaster ? 'Whiskey + bourbon / gin / beer / wine / oak - v3' : isTavern ? 'Wine / beer / gin / rye whiskey + bourbon / oak' : 'White pine, pine cones, holly leaves + berries,'}</text>
 <text class="note" x="32.5" y="20.2">${isMaster ? 'Layered foliage, curled edges and contour hatching.' : isTavern ? 'Distinct sections with softly overlapping transitions.' : 'mistletoe and poinsettia - denser botanical clusters.'}</text>
 <text class="note" x="0" y="25">TRUE PROPORTIONS - one drawing unit = one inch. Proof only: do not import this annotated wood layout as a cut file.</text>
 </svg>`;
@@ -564,7 +564,8 @@ if (isMaster) {
   })));
   for (const item of engraving) {
     const source = tavern.metadata.get(item.sourceId || item.id);
-    const section = regions.find(region => source.station < region.end) || regions.at(-1);
+    const section = regions.find(region => source.section === region.key);
+    assert(section, `Unknown batch section: ${item.id}`);
     const pass = source.weight === 'hatch' ? 'shading' : 'linework';
     batches.find(batch => batch.section === section.key && batch.pass === pass).items.push(item);
   }
@@ -586,6 +587,8 @@ ${pathMarkup('#808080', 0.01, '', false, items)}
   fs.writeFileSync(path.join(batchDirectory, 'manifest.json'), JSON.stringify({
     encoding: { onLine: '#808080', guide: '#0000ff' },
     widthInches: right, heightInches: B, totalPaths: engraving.length,
+    layoutVersion: tavern.stats.layoutVersion,
+    plantOrder: tavern.stats.plantOrder,
     placement: 'All files use the same full-board guides and coordinates. Never scale individual batches.',
     batches: manifest,
   }, null, 2));
@@ -617,7 +620,7 @@ footer p{font-size:13px;max-width:62%}a{color:#426247}nav{white-space:nowrap}
 <header><div><h1>${isMaster ? 'Layered foliage - an engraved botanical frieze' : isTavern ? 'The plants behind the pour' : 'A fuller botanical holiday garland'}</h1><p>23 3/8 in short arm &middot; 20 in bend &middot; 49 1/4 in long arm &middot; 8 1/2 in width throughout</p></div><span class="badge">${isMaster ? 'LAYERED / HATCHED' : isTavern ? 'US / UK BOTANICALS' : 'REVISION 2'} &nbsp; / &nbsp; TOP-DOWN PROOF</span></header>
 ${plan}
 <section class="details">
-<figure><figcaption>Botanical detail, enlarged<small>${isMaster ? 'Smaller forms interleave at each botanical handoff. Angled acorns sit in front of and behind oak leaves on woody twigs. Added rye fans balance the long arm, and corn has projecting kernel crowns and shaded side walls. Compare the oak, kernel-detail and four transition zooms in the gallery.' : isTavern ? 'Common juniper transitions into rye and corn. Explore all five sections on the comparison page.' : 'The same engraving paths: layered pine-cone scales, veined holly, five-needle white-pine bundles, berries, paired mistletoe leaves and a layered poinsettia.'}</small></figcaption>${detail(isMaster ? '3.1 16.0 8.4 3.7' : '24.5 5.15 17.5 3.5', 'Enlarged detailed botanical garland', 'repeat')}</figure>
+<figure><figcaption>Botanical detail, enlarged<small>${isMaster ? 'Version 3: whiskey on the short arm, then juniper, hops and barley, grape vine, and the unchanged oak ending. The existing detailed motifs follow the new route with interleaved transitions. Compare the oak, kernel-detail and four transition zooms in the gallery.' : isTavern ? 'Common juniper transitions into rye and corn. Explore all five sections on the comparison page.' : 'The same engraving paths: layered pine-cone scales, veined holly, five-needle white-pine bundles, berries, paired mistletoe leaves and a layered poinsettia.'}</small></figcaption>${detail(isMaster ? tavern.sections.find(section => section.key === 'wine-close').viewBox.join(' ') : '24.5 5.15 17.5 3.5', 'Enlarged detailed botanical garland', 'repeat')}</figure>
 </section>
 <footer><p><strong>Design proof, not a cut-depth prescription.</strong> ${isMaster ? 'The foliage occupies roughly a 3 in band centered 2.2 in from the exposed edge. Depth is suggested by actual overlapping outlines and hatch paths, not raster shadows or relief. Preview line weights are illustrative, not selected cutter widths; fine shading requires bit/depth selection and a physical sample.' : 'The botanical band is roughly 2 in wide; its center is 1.75 in inside the exposed edge. Stem lines stop beneath the main clusters instead of running through their centers. Fine botanical details require an appropriate bit and scrap test; cutter and depth remain unset.'} The oak grain comes from your photo. Gray SVG strokes encode on-line engraving; blue strokes are non-cutting guides.</p>
 <nav>${isTavern ? `<a href="../design-gallery.html#${isMaster ? 'master' : 'tavern'}">Compare all designs</a><br>` : ''}<a href="measured-oak-garland-proof.svg" download>Measured proof SVG</a><br><a href="${pathFilename}" download>Engraving paths SVG</a><br><a href="${guideFilename}" download>Origin SVG with blue board guides</a><br>${isMaster ? '<a href="../SHAPER-ORIGIN.md">Import, batch files and scrap-test guide</a><br>' : ''}<a href="https://support.shapertools.com/hc/en-us/articles/115002721473-Cut-Type-Encoding">Shaper cut-color reference</a></nav></footer>

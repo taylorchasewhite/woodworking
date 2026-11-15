@@ -6,7 +6,8 @@ fabrication files.
 ## Plans
 
 - [Oak bar-top botanical engraving](plans/bar-top-engraving/design-gallery.html):
-  measured holiday and US/UK drinking-botanical designs.
+  measured holiday and US/UK drinking-botanical designs. The current layered
+  design follows **Whiskey > Gin > Beer > Wine > Oak**, starting at the short arm.
 
 Download or clone the repository, then open the gallery locally. GitHub's file
 viewer does not run the interactive HTML.
@@ -18,8 +19,11 @@ Current exports encode **gray on-line engraving** and **blue non-cutting guides*
 The `bar-top-art-baseline-v1` tag preserves the pre-correction design with reversed
 colors and **must not be used for cutting**. Never import the annotated wood proof.
 The [Origin encoding v2 release](https://github.com/taylorchasewhite/woodworking/releases/tag/bar-top-origin-encoding-v2)
-includes an SVG-only transfer ZIP with instructions; extract it before copying
-files onto a USB drive.
+preserves the previous **Wine > Beer > Gin > Whiskey > Oak** arrangement.
+The [reordered v3 release](https://github.com/taylorchasewhite/woodworking/releases/tag/bar-top-order-v3)
+includes the current design and its regenerated batches in a new transfer ZIP;
+do not mix its files with the older v2 ZIP. Extract any transfer ZIP before
+copying SVGs onto a USB drive.
 
 ## Rebuilding
 

@@ -45,6 +45,8 @@ test('ten batches partition the complete design exactly without scaling or dupli
   const directory = 'master-botanicals';
   const manifest = JSON.parse(read(path.join(directory, 'origin-batches', 'manifest.json')));
   assert.deepEqual(manifest.encoding, { onLine: '#808080', guide: '#0000ff' });
+  assert.equal(manifest.layoutVersion, 'bar-top-order-v3');
+  assert.deepEqual(manifest.plantOrder, ['whiskey', 'gin', 'beer', 'wine', 'oak']);
   assert.equal(manifest.batches.length, 10);
   const full = paths(read(path.join(directory, 'master-botanicals-paths.svg')));
   assert.equal(manifest.totalPaths, full.length);
@@ -60,6 +62,8 @@ test('ten batches partition the complete design exactly without scaling or dupli
     const cuts = contents.filter(item => item.stroke === '#808080');
     assert.equal(cuts.length, batch.pathCount);
     assert(cuts.length > 0);
+    const families = { whiskey: ['rye', 'corn'], gin: ['juniper'], beer: ['hops', 'barley'], wine: ['grape'], oak: ['oak'] };
+    for (const cut of cuts) assert(families[batch.section].includes(cut.id.split('-')[0]), `Wrong plant in ${batch.filename}: ${cut.id}`);
     combined.push(...cuts);
   }
   assert.equal(new Set(combined.map(item => item.id)).size, full.length);
@@ -69,8 +73,10 @@ test('ten batches partition the complete design exactly without scaling or dupli
 
 test('all metadata-defined gallery regions retain their measured coordinate system', () => {
   const design = JSON.parse(read(path.join('master-botanicals', 'design.json')));
-  assert.equal(design.sections.filter(section => Number.isFinite(section.start)).length, 5);
-  assert.equal(design.sections.filter(section => section.key.endsWith('-transition')).length, 4);
+  assert.deepEqual(design.sections.filter(section => Number.isFinite(section.start)).map(section => section.key),
+    ['whiskey', 'gin', 'beer', 'wine', 'oak']);
+  assert.deepEqual(design.sections.filter(section => section.key.endsWith('-transition')).map(section => section.key),
+    ['whiskey-gin-transition', 'gin-beer-transition', 'beer-wine-transition', 'wine-oak-transition']);
   for (const section of design.sections) {
     assert.equal(section.viewBox.length, 4);
     assert(section.viewBox.every(Number.isFinite));
@@ -79,6 +85,99 @@ test('all metadata-defined gallery regions retain their measured coordinate syst
   for (const botanical of ['grape-', 'hops-', 'barley-', 'juniper-', 'rye-', 'corn-raised-kernel-', 'oak-acorn-']) {
     assert(read(path.join('master-botanicals', 'master-botanicals-paths.svg')).includes(botanical));
   }
+});
+
+test('actual cut coordinates place the botanical families in the requested physical order', t => {
+  const route = [];
+  function add(x, y) {
+    const last = route.at(-1);
+    route.push({ x, y, station: last ? last.station + Math.hypot(x - last.x, y - last.y) : 0 });
+  }
+  for (let i = 0; i <= 186; i++) add(1 + 18.525 * i / 186, 17.8);
+  for (let i = 1; i <= 30; i++) {
+    const a = Math.PI / 2 * (1 - i / 30);
+    add(19.525 + 1.65 * Math.cos(a), 16.15 + 1.65 * Math.sin(a));
+  }
+  for (let i = 1; i <= 82; i++) add(21.175, 16.15 - 8.2 * i / 82);
+  for (let i = 1; i <= 30; i++) {
+    const a = Math.PI + Math.PI / 2 * i / 30;
+    add(22.825 + 1.65 * Math.cos(a), 7.95 + 1.65 * Math.sin(a));
+  }
+  for (let i = 1; i <= 403; i++) add(22.825 + 40.3 * i / 403, 6.3);
+  const expected = [
+    { key: 'whiskey', families: ['rye', 'corn'], range: [0, 19] },
+    { key: 'gin', families: ['juniper'], range: [19, 29.5] },
+    { key: 'beer', families: ['hops', 'barley'], range: [29.5, 43.2] },
+    { key: 'wine', families: ['grape'], range: [43.2, 62.5] },
+    { key: 'oak', families: ['oak'], range: [62.5, 72.21] },
+  ];
+  const stations = new Map(expected.map(section => [section.key, []]));
+  for (const item of paths(read(path.join('master-botanicals', 'master-botanicals-paths.svg')))) {
+    const [x, y] = item.d.match(/-?\d+(?:\.\d+)?/g).slice(0, 2).map(Number);
+    const closest = route.reduce((a, b) => Math.hypot(x - a.x, y - a.y) <= Math.hypot(x - b.x, y - b.y) ? a : b);
+    const section = expected.find(section => section.families.includes(item.id.split('-')[0]));
+    assert(section, `Unknown physical plant: ${item.id}`);
+    stations.get(section.key).push(closest.station);
+  }
+  let previous = -Infinity;
+  for (const section of expected) {
+    const values = stations.get(section.key).sort((a, b) => a - b);
+    assert(values.length > 100, `Missing physical section: ${section.key}`);
+    const median = values[Math.floor(values.length / 2)];
+    assert(median > previous && median > section.range[0] && median < section.range[1],
+      `Misplaced ${section.key}: median station ${median}`);
+    previous = median;
+    t.diagnostic(`${section.key}: median cut station ${median.toFixed(2)} in`);
+  }
+  const design = JSON.parse(read(path.join('master-botanicals', 'design.json')));
+  const transitions = design.sections.filter(section => section.key.endsWith('-transition'));
+  for (let i = 0; i < transitions.length; i++) {
+    const [start, end] = transitions[i].stationWindow;
+    for (const section of expected.slice(i, i + 2)) {
+      assert(stations.get(section.key).filter(s => s >= start && s <= end).length >= 10,
+        `Missing ${section.key} interleaving in ${transitions[i].key}`);
+    }
+  }
+});
+
+test('sampled cut geometry stays inside the same measured oak outline with edge clearance', t => {
+  const wood = [[14.875, 0], [64.125, 0], [64.125, 8.5], [23.375, 8.5],
+    [23.375, 20], [0, 20], [0, 11.5], [14.875, 11.5]];
+  const edges = wood.map((a, i) => [a, wood[(i + 1) % wood.length]]);
+  let count = 0, minimum = Infinity;
+  function check([x, y]) {
+    let inside = false;
+    for (const [a, b] of edges) {
+      if ((a[1] > y) !== (b[1] > y) && x < (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1]) + a[0]) inside = !inside;
+      const dx = b[0] - a[0], dy = b[1] - a[1];
+      const u = Math.max(0, Math.min(1, ((x - a[0]) * dx + (y - a[1]) * dy) / (dx * dx + dy * dy)));
+      minimum = Math.min(minimum, Math.hypot(x - a[0] - u * dx, y - a[1] - u * dy));
+    }
+    assert(inside, `Engraving outside oak at ${x}, ${y}`);
+    count++;
+  }
+  for (const item of paths(read(path.join('master-botanicals', 'master-botanicals-paths.svg')))) {
+    let previous, first;
+    for (const [, command, numbers] of item.d.matchAll(/([MLQCZ])([^MLQCZ]*)/g)) {
+      const values = (numbers.match(/-?\d+(?:\.\d+)?/g) || []).map(Number);
+      if (command === 'Z') { check(first); previous = first; continue; }
+      const points = Array.from({ length: values.length / 2 }, (_, i) => [values[i * 2], values[i * 2 + 1]]);
+      if (command === 'M') { [previous] = points; first = previous; check(previous); continue; }
+      const polygon = [previous, ...points];
+      const length = polygon.slice(1).reduce((sum, p, i) => sum + Math.hypot(p[0] - polygon[i][0], p[1] - polygon[i][1]), 0);
+      const steps = Math.max(1, Math.ceil(length / 0.025));
+      for (let i = 1; i <= steps; i++) {
+        let level = polygon;
+        const u = i / steps;
+        while (level.length > 1) level = level.slice(1).map((p, j) =>
+          [level[j][0] * (1 - u) + p[0] * u, level[j][1] * (1 - u) + p[1] * u]);
+        check(level[0]);
+      }
+      previous = points.at(-1);
+    }
+  }
+  assert(minimum > 0.70, `Insufficient centerline edge clearance: ${minimum}`);
+  t.diagnostic(`${count} curve samples; minimum centerline edge clearance ${minimum.toFixed(4)} in`);
 });
 
 test('published reference JPEGs retain only an orientation EXIF entry', () => {

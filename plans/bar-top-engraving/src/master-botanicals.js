@@ -16,12 +16,21 @@ module.exports = function drawMaster(api) {
   }
   const range = (a, b) => a + random() * (b - a);
   const sections = [
-    { key: 'wine', title: 'Wine - grapes and leaves on a flowing vine', start: 0, end: 19.3, description: 'A woody grape vine connects alternating petioles, palmate serrated leaves, curled tendrils and hanging grape bunches. Short visible shoots explain the growth between overlaps.' },
-    { key: 'beer', title: 'Beer - hops on bines and barley stalks', start: 19.3, end: 34.5, description: 'Hop leaves and cones attach to a fine twining bine concealed beneath the foliage. Barley heads retain their shape and grow on their own slender culms, not a shared vine.' },
-    { key: 'gin', title: 'Gin - juniper berries on leafy branches', start: 34.5, end: 45, description: 'Common juniper is woody, not a vine. Needle-bearing side shoots and berry pedicels join a tapered branch mostly hidden among the dense sprays.' },
-    { key: 'whiskey', title: 'Whiskey / bourbon - rye stalks and husked corn', start: 45, end: 62.5, description: 'Small rye fans enrich the individual stalks without changing the grain-head anatomy. Differently angled corn ears have raised kernel crowns, shaded side faces and an uneven kernel-built silhouette, with partially peeled husks.' },
-    { key: 'oak', title: 'White oak - layered leaves and angled acorns', start: 62.5, end: totalLength, description: 'Quercus alba leaves spread at varied angles from woody twigs. Some foreground leaves partially conceal the angled acorns, while other acorns remain unobscured by foreground leaves. Smaller first leaves overlap the fading rye stalks.' },
+    { key: 'whiskey', title: 'Whiskey / bourbon - rye stalks and husked corn', start: 0, end: 19, sourceStart: 43.5, stationScale: 1, description: 'The frieze begins with the existing rye fans and differently angled corn ears on the short arm. Raised kernel crowns, shaded side faces and partially peeled husks retain the detailed engraving style.' },
+    { key: 'gin', title: 'Gin - juniper berries on leafy branches', start: 19, end: 29.5, sourceStart: 34.5, stationScale: 1, description: 'Whorled juniper sprays and berries follow the whiskey grains around the bend, growing from their own mostly concealed woody branch.' },
+    { key: 'beer', title: 'Beer - hops on bines and barley stalks', start: 29.5, end: 43.2, sourceStart: 19.3, stationScale: 13.7 / 15.2, description: 'Hops on a fine twining bine and barley on individual culms bridge juniper and wine. The existing composition is fitted longitudinally by about 10 percent; leaf height and botanical anatomy remain.' },
+    { key: 'wine', title: 'Wine - grapes and leaves on a flowing vine', start: 43.2, end: 62.5, sourceStart: 0, stationScale: 1, description: 'The lush woody grape vine, palmate serrated leaves, tendrils and seven hanging bunches occupy the long arm before the oak. Late grape foliage interleaves with the first small oak leaves.' },
+    { key: 'oak', title: 'White oak - layered leaves and angled acorns', start: 62.5, end: totalLength, sourceStart: 62.5, stationScale: 1, description: 'The oak ending stays in place. Quercus alba leaves spread at varied angles from woody twigs, with foreground leaves partly hiding selected acorns. Smaller first leaves overlap the ending grape vine.' },
   ];
+  const botanicalSections = Object.fromEntries([
+    ['rye', 'whiskey'], ['corn', 'whiskey'], ['juniper', 'gin'],
+    ['hops', 'beer'], ['barley', 'beer'], ['grape', 'wine'], ['oak', 'oak'],
+  ].map(([plant, key]) => [plant, sections.find(section => section.key === key)]));
+  function placedStation(kind, s) {
+    const section = botanicalSections[kind.split('-')[0]];
+    assert(section, `Unknown botanical family: ${kind}`);
+    return section.start + (s - section.sourceStart) * section.stationScale;
+  }
 
   function spline(points, closed = false) {
     const commands = [['M', ...points[0]]];
@@ -42,6 +51,8 @@ module.exports = function drawMaster(api) {
 
   function object(kind, s, y, angle, scale, contour, layer = shapes.length) {
     const id = `${kind}-${++serial}`;
+    const section = botanicalSections[kind.split('-')[0]];
+    const station = placedStation(kind, s);
     const controlNumbers = contour.flatMap(([, ...values]) => values);
     const rotated = transform(contour, 0, 0, angle, scale);
     const ys = rotated.flatMap(([, ...values]) => values.filter((_, i) => i % 2 === 1));
@@ -52,13 +63,17 @@ module.exports = function drawMaster(api) {
     const fit = extentY > usableY ? usableY / extentY : 1;
     scale *= fit;
     assert(controlNumbers.every(Number.isFinite));
-    assert(s + Math.min(...xs) * fit >= 0.02 && s + Math.max(...xs) * fit <= totalLength - 0.02, `Object outside station range: ${id}`);
+    assert(placedStation(kind, s + Math.min(...xs) * fit) >= 0.02 &&
+      placedStation(kind, s + Math.max(...xs) * fit) <= totalLength - 0.02, `Object outside station range: ${id}`);
     const shape = { id, z: layer, s, y, angle, scale, contourId: `${id}-silhouette`, contour };
     shapes.push(shape);
     function emit(suffix, commands, detail = false, weight = 'outline') {
       const pathId = `${id}-${suffix}`;
-      motifPath(pathId, s, transform(commands, 0, y, angle, scale), true);
-      metadata.set(pathId, { owner: shape.id, z: shape.z, station: s, keepInside: detail, weight });
+      // Move connected motifs in route space before projection and hidden-line removal.
+      const positioned = transform(commands, 0, y, angle, scale).map(([command, ...values]) =>
+        [command, ...values.map((value, i) => i % 2 ? value : value * section.stationScale)]);
+      motifPath(pathId, station, positioned, true);
+      metadata.set(pathId, { owner: shape.id, z: shape.z, station, section: section.key, keepInside: detail, weight });
       return pathId;
     }
     emit('silhouette', contour);
@@ -255,7 +270,7 @@ module.exports = function drawMaster(api) {
     structuralSupports.push({ kind, contourId: branch.contourId,
       points: Array.from({ length: samples + 1 }, (_, i) => {
         const s = start + (end - start) * i / samples;
-        return mapPoint(s, yAt(s));
+        return mapPoint(placedStation(kind, s), yAt(s));
       }) });
     return branch;
   }
@@ -570,7 +585,7 @@ module.exports = function drawMaster(api) {
   }
   for (let s = 44.9; s < 62.8; s += range(1.25, 1.98)) grainHead('rye', s, range(-0.37, 0.48), range(-0.20, 0.18), 0.93);
   for (const p of [
-    { s: 43.2, y: 0.10, angle: -0.22, size: 0.70 },
+    { s: 44.8, y: 0.10, angle: -0.22, size: 0.70 },
     { s: 52.9, y: 0.28, angle: -0.34, size: 0.88 },
     { s: 53.25, y: -0.18, angle: 0.22, size: 0.82 },
     { s: 53.8, y: 0.04, angle: 0.08, size: 0.92 },
@@ -619,12 +634,18 @@ module.exports = function drawMaster(api) {
   for (const p of oakLeaves.filter(p => p.foreground)) leaf('oak-foreground-leaf', p.s, p.y, p.angle, p.scale, true, p.small);
 
   const transitionSections = [
-    { key: 'wine-beer-transition', title: 'Transition - grape vine into hops and barley', stationWindow: [17.4, 22.5], description: 'A smaller late grape bunch and palmate leaves overlap the first hop leaves and barley stalks, rather than stopping at a sharp boundary.' },
-    { key: 'beer-gin-transition', title: 'Transition - hops and barley into juniper', stationWindow: [32.8, 37.5], description: 'A smaller hop leaf and cone extend among progressively fuller juniper sprays. Every plant retains its own connected support.' },
-    { key: 'gin-grain-transition', title: 'Transition - juniper into rye', stationWindow: [42.5, 47.1], description: 'Juniper needles taper down in size while early rye heads and leaves emerge among the ending sprays.' },
-    { key: 'grain-oak-transition', title: 'Transition - rye into white oak', stationWindow: [60.2, 65.0], description: 'The first oak leaves are smaller; late rye stalks extend behind the growing oak leaf masses and their connected fruit twigs.' },
+    { key: 'whiskey-gin-transition', title: 'Transition - rye into juniper', stationWindow: [17.3, 21.8], description: 'Late rye heads overlap the first smaller juniper sprays as the engraving approaches the bend. The grains keep their individual culms beside the woody juniper branch.' },
+    { key: 'gin-beer-transition', title: 'Transition - juniper into hops and barley', stationWindow: [27.8, 32.2], description: 'Ending juniper sprays interleave with the first hop leaves and barley stalks. Each plant retains its own concealed support.' },
+    { key: 'beer-wine-transition', title: 'Transition - hops and barley into grape vine', stationWindow: [41.5, 46.5], description: 'Smaller late hop leaves and a cone overlap the beginning grape vine, broad palmate leaves and first hanging bunches.' },
+    { key: 'wine-oak-transition', title: 'Transition - grape vine into white oak', stationWindow: [60.2, 65.0], description: 'A smaller late grape bunch and palmate foliage recede beneath the first small oak leaves, leading into the unchanged layered acorn ending.' },
   ];
-  for (const section of [...sections, ...transitionSections]) {
+  const closeSections = [
+    { key: 'corn-close', title: 'Close-up - corn with raised kernels and peeled husks', stationWindow: [placedStation('corn', 48.8), placedStation('corn', 59.0)], description: 'The two existing corn ears now sit on the short arm. Curved kernel crowns, shaded side faces, bumpy outer contours and partly peeled husks retain the modeled form.' },
+    { key: 'gin-close', title: 'Close-up - leafy juniper branch and berries', stationWindow: [placedStation('juniper', 35.8), placedStation('juniper', 41.5)], description: 'Whorled needle sprays and berry pedicels follow the bend, joined to their own woody juniper branch.' },
+    { key: 'wine-close', title: 'Close-up - grapes growing on a vine', stationWindow: [placedStation('grape', 2.2), placedStation('grape', 7.6)], description: 'The existing lush grape foliage and hanging bunches now grow along the long arm, after the beer plants and before the oak.' },
+    { key: 'oak-close', title: 'Close-up - naturally layered oak and angled acorns', viewBox: [52.0, 4.3, 10.4, 3.8], rotate: 0, description: 'The oak ending remains in place. White-oak leaves grow forward, backward and sideways from connected twigs, partly concealing selected angled acorns.' },
+  ];
+  for (const section of [...sections, ...transitionSections, ...closeSections.filter(section => section.stationWindow)]) {
     const [start, end] = section.stationWindow || [section.start, section.end];
     const points = [];
     for (let s = start; s <= end; s += 0.12) points.push(mapPoint(s, 0));
@@ -637,12 +658,9 @@ module.exports = function drawMaster(api) {
     section.viewBox = [minX, minY, maxX - minX, maxY - minY].map(n => Number(n.toFixed(4)));
     section.rotate = section.viewBox[3] > section.viewBox[2] ? -90 : 0;
   }
-  const cornCenter = mapPoint(cornEars[0].s, cornEars[0].y);
+  const cornCenter = mapPoint(placedStation('corn', cornEars[0].s), cornEars[0].y);
   sections.unshift(
-    { key: 'wine-close', title: 'Close-up - grapes growing on a vine', viewBox: [3.1, 16.0, 8.4, 3.7], rotate: 0, description: 'The curved woody vine joins leaf petioles and hanging fruit stalks. Grape leaves have a basal sinus and radiating palmate veins; only selected leaves have folds.' },
-    { key: 'oak-close', title: 'Close-up - naturally layered oak and angled acorns', viewBox: [52.0, 4.3, 10.4, 3.8], rotate: 0, description: 'White-oak leaves spread forward, backward and sideways from connected twigs. Selected foreground leaves partly cover the acorns; other acorns remain unobscured by those leaves.' },
-    { key: 'gin-close', title: 'Close-up - leafy juniper branch and berries', viewBox: [28.2, 4.45, 8.6, 3.5], rotate: 0, description: 'Berry pedicels and whorled needle sprays grow from the same woody juniper branch; this plant is not a vine.' },
-    { key: 'corn-close', title: 'Close-up - corn with raised kernels and peeled husks', viewBox: [38.5, 4.2, 12.4, 4.0], rotate: 0, description: 'Kernels project beyond a narrow inner cob. Curved crowns, visible side walls and short underside hatching describe relief; the kernel contours themselves make the uneven outer edge. Two distinct ear angles sit among fuller rye fans.' },
+    ...closeSections,
     { key: 'corn-kernel-close', title: 'Detail - raised corn kernels and side faces', viewBox: [cornCenter[0] - 1.15, cornCenter[1] - 1.10, 2.3, 2.2], rotate: 0, description: 'A tighter view of the first ear shows the rounded kernel crowns, shaded lower side walls and projecting edge kernels. The smooth inner cob is beneath the kernel layer, not the outer silhouette.' },
     ...transitionSections,
   );
@@ -662,6 +680,8 @@ module.exports = function drawMaster(api) {
   return {
     seed, sections, foregroundIds, metadata, masksFor, keepInsideFor, structuralSupports, oakAcorns,
     stats: {
+      layoutVersion: 'bar-top-order-v3',
+      plantOrder: ['whiskey', 'gin', 'beer', 'wine', 'oak'],
       layeredObjects: shapes.length, noGenericGarlandSpine: true, hatchSpacingTypicalInches: [0.027, 0.060],
       botanicalStructure: {
         oakLeafSpecies: 'Quercus alba', oakLobesPerLeaf: 7,

@@ -42,11 +42,11 @@ const designs = [
     sections: tavern.sections,
   },
   {
-    id: 'master', title: 'Layered botanical frieze - engraved foliage', tab: '5. Layered engraving', type: 'svg',
+    id: 'master', title: 'Layered botanical frieze - reordered v3', tab: '5. Layered engraving', type: 'svg',
     proof: 'master-botanicals/measured-oak-garland-proof.svg',
     paths: 'master-botanicals/master-botanicals-paths.svg',
     guides: 'master-botanicals/master-botanicals-with-guides.svg',
-    description: 'Smaller botanical forms interleave at each handoff, and added rye fans balance the long arm. White-oak leaves spread at varied angles from woody twigs; selected foreground leaves partly hide the angled acorns. Corn has raised kernel crowns, shaded side walls and a bumpy kernel-built silhouette, rather than circles inside a smooth cob. Vine, bine, branches and individual grain stalks remain plant-specific and largely concealed. Earlier designs remain unchanged.',
+    description: 'New order, starting at the short-arm end: whiskey / rye and corn, then gin / juniper, beer / hops and barley, wine / grape vine, and white oak / acorns. The existing detailed motifs, layered oak ending and measured board layout are retained. The beer grouping is fitted about 10% along the route, with no change in band height. Plants interleave at all four new handoffs. The previous layered arrangement remains in the bar-top-origin-encoding-v2 Git tag; designs 1-4 are unchanged.',
     sections: master.sections,
   },
 ];
@@ -116,7 +116,7 @@ ${designs.map(d => `<button id="tab-${d.id}" type="button" role="tab" aria-selec
 <tr><td>3 - growth clarity</td><td>Fruit and foliage overlapped without enough readable attachment routes.</td><td>Grapes, oak, juniper and hops now have connected, largely concealed support stems appropriate to each plant. Barley and rye have individual culms; acorn stalks and woody fruit twigs are connected.</td></tr>
 <tr><td>4 - line hierarchy</td><td>Dense hatch knots and repeated curled edges competed for attention.</td><td>Reduced wine hatching and limited folds to selected leaves. Further simplification elsewhere remains a discussion, followed by actual-size and scrap tests.</td></tr>
 <tr><td>5 - subjective rhythm</td><td>The wine and oak sections were denser than the long arm; similarly upright corn motifs repeated conspicuously.</td><td>Added small rye fans around the retained grain-head placements. Corn now has two different angles, raised kernel crowns, shaded side faces and partially peeled husks. Oak fruit angles and foreground leaf overlap are deliberately varied.</td></tr>
-<tr><td>6 - subjective transitions</td><td>Some changes between plant sections read abruptly rather than as gentle handoffs.</td><td>Added a smaller late grape bunch, a small hop leaf/cone among the first juniper sprays, tapered terminal juniper needles, early/late rye heads and smaller introductory oak leaves. Four transition zooms show the actual interleaving; plants do not share a fictitious common vine.</td></tr>
+<tr><td>6 - subjective transitions</td><td>Some changes between plant sections read abruptly rather than as gentle handoffs.</td><td>Version 3 reorders the detailed plant groups: whiskey to gin, gin to beer, beer to wine, and wine to oak. Four updated transition zooms show the interleaving at these new handoffs. Each plant keeps its own support; the earlier review did not inspect this rearrangement.</td></tr>
 </tbody></table></div>
 <p><strong>Strengths noted:</strong> generous clear tabletop space and coherent edge-following placement; curved hatching already gives useful volume through lines alone.</p>
 <p><strong>Next decisions:</strong> botanical fidelity versus ornamental folds; deliberately different sectional densities versus a smoother rhythm; how much shading stays readable at actual size and with the chosen bit.</p>
